@@ -11,10 +11,10 @@ const colorD = new THREE.Color(0xE8974E);
 const colorE = new THREE.Color(0x6AC9DE);
 
 // カメラ座標の設定
-const posA = new THREE.Vector3(-22, 2, 40);
+const posA = new THREE.Vector3(-22, 2, 14);
 const tarA = new THREE.Vector3(-2, 0, 0);
 
-const posB = new THREE.Vector3(0, 3, 17);
+const posB = new THREE.Vector3(0, 3, 25);
 const tarB = new THREE.Vector3(0, -1, 0);
 
 const posC = new THREE.Vector3(-11.18, 0.7, -0.5);
