@@ -148,8 +148,8 @@ body {
     background: rgba(240, 240, 240, 0.5); 
     color: #333; /* 文字色：黒 */
     width: 60%;
-    max-width: 600px;
-    max-height: 60vh;
+    max-width: 1000px;
+    max-height: 90vh;
     text-align: center;
 }
 /* F地点内の見出し線色調整 */
@@ -182,7 +182,7 @@ body {
     color: #fff;
     width: 80%;
     max-width: 800px;
-    max-height: 60vh;
+    max-height: 65vh;
     text-align: center;
 }
 
@@ -236,6 +236,9 @@ body {
 .nav-button:active { transform: scale(0.95); }
 
 /* --- フォント設定 --- */
+.intro{font-family: "Noto Sans JP", sans-serif ;
+
+}
 .chapter1{ 
     font-family: "Zen Kurenaido", sans-serif; }
 .chapter2{ 
@@ -243,7 +246,11 @@ body {
 .chapter3{ 
     font-family: "Noto Sans JP", sans-serif;}
 
+.intro-p {
+    font-family: "Noto Sans JP", sans-serif;
 
+    text-align: center; 
+}
 .chapter1-p { 
     font-family: "Zen Kurenaido", sans-serif; 
     text-align: left;}
