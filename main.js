@@ -37,7 +37,7 @@ const contentD       = document.getElementById('content-d');
 const contentC       = document.getElementById('content-c');
 const contentE       = document.getElementById('content-e');
 
-// ★★★ 追加・修正: 左右のスライド画像たち ★★★
+// 左右のスライド画像たち
 const contentD_Left  = document.getElementById('content-d-left');
 const contentD_Right = document.getElementById('content-d-right');
 
@@ -101,9 +101,9 @@ loader.load('./model.glb', (gltf) => {
 }, undefined, (err) => console.error(err));
 
 
-// ★★★ 表示切り替え関数（C, D, E 全対応版） ★★★
+// ★★★ 表示切り替え関数 ★★★
 function updateContentVisibility(location) {
-    // 1. まず全部の画像を隠す（重要）
+    // 1. まず全部隠す
     if(contentD_Left)  contentD_Left.classList.remove('visible');
     if(contentD_Right) contentD_Right.classList.remove('visible');
     
@@ -113,10 +113,12 @@ function updateContentVisibility(location) {
     if(contentE_Left)  contentE_Left.classList.remove('visible');
     if(contentE_Right) contentE_Right.classList.remove('visible');
 
-    // テキストも隠す
     if(contentD)       contentD.classList.remove('visible');
     if(contentC)       contentC.classList.remove('visible');
     if(contentE)       contentE.classList.remove('visible');
+
+    // 引数が null なら全部消した状態で終了（移動開始時など）
+    if (!location) return;
 
     // 2. 現在地に合わせて表示
     if (location === 'D') {
@@ -125,13 +127,11 @@ function updateContentVisibility(location) {
         if(contentD)       contentD.classList.add('visible');
     } 
     else if (location === 'C') {
-        // C地点用の画像を表示
         if(contentC_Left)  contentC_Left.classList.add('visible');
         if(contentC_Right) contentC_Right.classList.add('visible');
         if(contentC)       contentC.classList.add('visible');
     } 
     else if (location === 'E') {
-        // E地点用の画像を表示
         if(contentE_Left)  contentE_Left.classList.add('visible');
         if(contentE_Right) contentE_Right.classList.add('visible');
         if(contentE)       contentE.classList.add('visible');
@@ -167,63 +167,76 @@ function clearTypewriter() {
 }
 
 
-// --- 移動実行関数 ---
+// ★★★ 移動実行関数（修正版：消えてから動く） ★★★
 function executeMove(targetPos, targetLook, newLocationName) {
     controls.enabled = false; 
+    
+    // 1. まずタイプライターと、すべてのオーバーレイ画像を消す
     clearTypewriter();
+    updateContentVisibility(null); // 全部非表示にする
 
-    let targetColor = defaultBgColor;
-    if (newLocationName === 'C') targetColor = colorC;
-    else if (newLocationName === 'D') targetColor = colorD;
-    else if (newLocationName === 'E') targetColor = colorE;
+    // 2. CSSの「消えるアニメーション」が終わるまで待つ
+    // CSSで opacity 0.5s と transform 0.5s になっているので、
+    // 余裕を持って 800ms (0.8秒) 待ちます。
+    setTimeout(() => {
 
-    gsap.to(scene.background, {
-        r: targetColor.r, g: targetColor.g, b: targetColor.b,
-        duration: 2.5,
-        ease: "power2.inOut"
-    });
+        // --- ここからカメラ移動開始 ---
 
-    const startPos = camera.position.clone();
-    const controlPos = startPos.clone().lerp(targetPos, 0.5);
-    controlPos.z += 15; 
+        let targetColor = defaultBgColor;
+        if (newLocationName === 'C') targetColor = colorC;
+        else if (newLocationName === 'D') targetColor = colorD;
+        else if (newLocationName === 'E') targetColor = colorE;
 
-    const curve = new THREE.QuadraticBezierCurve3(startPos, controlPos, targetPos);
-    const progress = { value: 0 };
+        gsap.to(scene.background, {
+            r: targetColor.r, g: targetColor.g, b: targetColor.b,
+            duration: 2.5,
+            ease: "power2.inOut"
+        });
 
-    gsap.to(progress, {
-        value: 1,
-        duration: 2.5,
-        ease: "power2.inOut",
-        onUpdate: () => {
-            const point = curve.getPoint(progress.value);
-            camera.position.copy(point);
-        }
-    });
+        const startPos = camera.position.clone();
+        const controlPos = startPos.clone().lerp(targetPos, 0.5);
+        controlPos.z += 15; 
 
-    gsap.to(controls.target, {
-        x: targetLook.x, y: targetLook.y, z: targetLook.z,
-        duration: 2.5,
-        ease: "power2.inOut",
-        onUpdate: () => controls.update(),
-        onComplete: () => {
-            currentLocation = newLocationName;
-            controls.enabled = true;
+        const curve = new THREE.QuadraticBezierCurve3(startPos, controlPos, targetPos);
+        const progress = { value: 0 };
 
-            if (currentLocation === 'B') {
-                controls.enableRotate = true;
-                controls.rotateSpeed = 0.2; 
-                startTypewriter("Click anywhere to begin");
-            } else if (['C', 'D', 'E'].includes(currentLocation)) {
-                controls.enableRotate = false;
-            } else {
-                controls.enableRotate = true;
-                controls.rotateSpeed = 0.5;
+        gsap.to(progress, {
+            value: 1,
+            duration: 2.5,
+            ease: "power2.inOut",
+            onUpdate: () => {
+                const point = curve.getPoint(progress.value);
+                camera.position.copy(point);
             }
+        });
 
-            updateContentVisibility(currentLocation);
-            console.log(`Moved to: ${currentLocation}`);
-        }
-    });
+        gsap.to(controls.target, {
+            x: targetLook.x, y: targetLook.y, z: targetLook.z,
+            duration: 2.5,
+            ease: "power2.inOut",
+            onUpdate: () => controls.update(),
+            onComplete: () => {
+                currentLocation = newLocationName;
+                controls.enabled = true;
+
+                if (currentLocation === 'B') {
+                    controls.enableRotate = true;
+                    controls.rotateSpeed = 0.2; 
+                    startTypewriter("Click anywhere to begin");
+                } else if (['C', 'D', 'E'].includes(currentLocation)) {
+                    controls.enableRotate = false;
+                } else {
+                    controls.enableRotate = true;
+                    controls.rotateSpeed = 0.5;
+                }
+
+                // 3. 移動が終わったら、新しい地点の画像を表示する
+                updateContentVisibility(currentLocation);
+                console.log(`Moved to: ${currentLocation}`);
+            }
+        });
+
+    }, 200); // ★ここが待ち時間（ミリ秒）です
 }
 
 
@@ -284,6 +297,9 @@ function startExperience() {
     if (flatContent) {
         flatContent.classList.add('hidden');
     }
+    // ここも executeMove を使うので、「少し待ってから移動」になります。
+    // A地点にはオーバーレイがないので待つ必要はないですが、
+    // 統一された動き（タメてから飛ぶ）として違和感はないはずです。
     executeMove(posB, tarB, 'B');
 }
 
