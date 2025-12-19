@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-/* --- 基本設定 --- */
 * {
     margin: 0;
     padding: 0;
@@ -65,8 +64,9 @@ body {
 
 .site-header button {
     font-family: "DotGothic16", sans-serif;
-    background: rgba(255, 255, 255, 0); /* ボタンの背景を少し見やすく */
-    border: 1px solid rgba(255,255,255,0);
+    background: rgba(255, 255, 255, 0);
+    /* ボタンの背景を少し見やすく */
+    border: 1px solid rgba(255, 255, 255, 0);
     padding: 8px 16px;
     margin-left: 10px;
     border-radius: 20px;
@@ -102,39 +102,53 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
+
     /* 共通機能 */
-    overflow-y: auto;     /* スクロール有効 */
+    overflow-y: auto;
+    /* スクロール有効 */
     z-index: 10;
-    pointer-events: auto; /* 操作有効 */
-    
+    pointer-events: auto;
+    /* 操作有効 */
+
     /* アニメーション */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease, visibility 0.5s ease;
-    
+
     /* 基本の装飾 */
     border-radius: 15px;
     padding: 40px;
 }
 
 /* スクロールバー装飾 */
-.overlay-text::-webkit-scrollbar { width: 8px; }
-.overlay-text::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
-.overlay-text::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.5); border-radius: 4px; }
+.overlay-text::-webkit-scrollbar {
+    width: 8px;
+}
+
+.overlay-text::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.overlay-text::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
 
 /* 共通テキストスタイル */
 .overlay-text h1 {
     font-size: 2.5rem;
     margin-bottom: 30px;
-    border-bottom: 1px solid rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     padding-bottom: 10px;
 }
+
 .overlay-text p {
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 20px;
 }
+
 .overlay-text.visible {
     opacity: 1;
     visibility: visible;
@@ -145,21 +159,26 @@ body {
 
 /* F地点（プロローグ）：白っぽく、中央揃え */
 #content-f {
-    background: rgba(240, 240, 240, 0.5); 
-    color: #333; /* 文字色：黒 */
+    background: rgba(240, 240, 240, 0.5);
+    color: #333;
+    /* 文字色：黒 */
     width: 60%;
     max-width: 1000px;
     max-height: 80vh;
     text-align: center;
 }
+
 /* F地点内の見出し線色調整 */
-#content-f h1 { border-bottom: 1px solid rgba(0,0,0,0.2); }
+#content-f h1 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
 
 
 /* C地点（第1章）：黒っぽく、左揃え */
 #content-c {
     background: rgba(0, 0, 0, 0);
-    color: #fff; /* 文字色：白 */
+    color: #fff;
+    /* 文字色：白 */
     width: 80%;
     max-width: 500px;
     max-height: 70vh;
@@ -201,9 +220,22 @@ body {
     transition: opacity 0.5s ease, visibility 0.2s ease, transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.overlay-corner img { width: 100%; display: block; }
-.left-bottom { bottom: 0; left: 0; transform: translateX(-100%); }
-.right-bottom { bottom: 0; right: 0; transform: translateX(100%); }
+.overlay-corner img {
+    width: 100%;
+    display: block;
+}
+
+.left-bottom {
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.right-bottom {
+    bottom: 0;
+    right: 0;
+    transform: translateX(100%);
+}
 
 .overlay-corner.visible {
     opacity: 1;
@@ -215,7 +247,8 @@ body {
 /* --- ボタン位置とデザイン --- */
 .button-container {
     display: flex;
-    justify-content: center; /* 中央寄せ */
+    justify-content: center;
+    /* 中央寄せ */
     margin-top: 60px;
     margin-bottom: 20px;
     width: 100%;
@@ -232,34 +265,54 @@ body {
     pointer-events: auto;
     transition: transform 0.2s, background-color 0.2s;
 }
-.nav-button:hover { transform: scale(1.1); background-color: #eee; }
-.nav-button:active { transform: scale(0.95); }
+
+.nav-button:hover {
+    transform: scale(1.1);
+    background-color: #eee;
+}
+
+.nav-button:active {
+    transform: scale(0.95);
+}
 
 /* --- フォント設定 --- */
-.intro{font-family: "Noto Sans JP", sans-serif ;
+.intro {
+    font-family: "Noto Sans JP", sans-serif;
 
 }
-.chapter1{ 
-    font-family: "Zen Kurenaido", sans-serif; }
-.chapter2{ 
-    font-family: "DotGothic16", sans-serif; }
-.chapter3{ 
-    font-family: "Noto Sans JP", sans-serif;}
+
+.chapter1 {
+    font-family: "Zen Kurenaido", sans-serif;
+}
+
+.chapter2 {
+    font-family: "DotGothic16", sans-serif;
+}
+
+.chapter3 {
+    font-family: "Noto Sans JP", sans-serif;
+}
 
 .intro-p {
     font-family: "Noto Sans JP", sans-serif;
 
-    text-align: center; 
+    text-align: center;
 }
-.chapter1-p { 
-    font-family: "Zen Kurenaido", sans-serif; 
-    text-align: left;}
-.chapter2-p { 
-    font-family: "DotGothic16", sans-serif; 
-    text-align: left;}
-.chapter3-p { 
+
+.chapter1-p {
+    font-family: "Zen Kurenaido", sans-serif;
+    text-align: left;
+}
+
+.chapter2-p {
+    font-family: "DotGothic16", sans-serif;
+    text-align: left;
+}
+
+.chapter3-p {
     font-family: "Noto Sans JP", sans-serif;
-    text-align: left; }
+    text-align: left;
+}
 
 /* --- タイプライター --- */
 #typewriter-text {
@@ -275,13 +328,25 @@ body {
     z-index: 50;
     pointer-events: none;
 }
+
 #typewriter-text::after {
     content: "|";
     animation: blink 1s infinite;
     opacity: 1;
     margin-left: 5px;
 }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
 
 
 /* --- 全画面ノイズテクスチャの設定 --- */
@@ -291,30 +356,64 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 9999; /* Welcome画面(2000)よりも上に表示 */
-    pointer-events: none; /* これがないとボタンが押せなくなる（重要！） */
-    
+    z-index: 9999;
+    /* Welcome画面(2000)よりも上に表示 */
+    pointer-events: none;
+    /* これがないとボタンが押せなくなる（重要！） */
+
     /* ノイズの濃さ（0.03 〜 0.1 くらいがおすすめ） */
-    opacity: 0.05; 
+    opacity: 0.06;
 
     /* ノイズ画像の生成（Base64データ） */
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    
+
     /* ノイズをパラパラ動かすアニメーション */
     animation: noiseAnimation 0.5s steps(1) infinite;
 }
 
 /* ノイズをランダムにずらして動いているように見せる */
 @keyframes noiseAnimation {
-    0% { transform: translate(0, 0); }
-    10% { transform: translate(-5%, -5%); }
-    20% { transform: translate(-10%, 5%); }
-    30% { transform: translate(5%, -10%); }
-    40% { transform: translate(-5%, 15%); }
-    50% { transform: translate(-10%, 5%); }
-    60% { transform: translate(15%, 0); }
-    70% { transform: translate(0, 10%); }
-    80% { transform: translate(-15%, 0); }
-    90% { transform: translate(10%, 5%); }
-    100% { transform: translate(5%, 0); }
+    0% {
+        transform: translate(0, 0);
+    }
+
+    10% {
+        transform: translate(-5%, -5%);
+    }
+
+    20% {
+        transform: translate(-10%, 5%);
+    }
+
+    30% {
+        transform: translate(5%, -10%);
+    }
+
+    40% {
+        transform: translate(-5%, 15%);
+    }
+
+    50% {
+        transform: translate(-10%, 5%);
+    }
+
+    60% {
+        transform: translate(15%, 0);
+    }
+
+    70% {
+        transform: translate(0, 10%);
+    }
+
+    80% {
+        transform: translate(-15%, 0);
+    }
+
+    90% {
+        transform: translate(10%, 5%);
+    }
+
+    100% {
+        transform: translate(5%, 0);
+    }
 }
