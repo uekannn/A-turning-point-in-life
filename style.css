@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /* --- 基本設定 --- */
 * {
     margin: 0;
@@ -6,37 +8,34 @@
 }
 
 body {
-    overflow: hidden; /* 画面全体のスクロールは禁止 */
-    background-color: #f4f4f4; /* 読み込み時の隙間用 */
+    overflow: hidden;
+    background-color: #f4f4f4;
 }
 
-/* --- Welcome画面（オープニング） --- */
+/* --- Welcome画面 --- */
 #flat-content {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #0e0e0e; /* 黒背景 */
-    z-index: 2000; /* 最前面 */
-
+    background-color: #0e0e0e;
+    z-index: 2000;
     display: flex;
-    align-items: flex-start; /* 上寄せ */
-    justify-content: flex-start; /* 左寄せ */
-    padding: 50px; /* 内側の余白 */
-
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 50px;
     transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-/* スクロールされたら上に消えるクラス */
 #flat-content.hidden {
     transform: translateY(-100%);
 }
 
 #flat-content .container {
-    text-align: left; /* 左揃え */
+    text-align: left;
     font-family: "DotGothic16", sans-serif;
-    color: #fff; /* 文字色：白 */
+    color: #fff;
 }
 
 #flat-content h1 {
@@ -44,7 +43,7 @@ body {
     margin-bottom: 20px;
 }
 
-/* --- WebGL（3D背景） --- */
+/* --- WebGL --- */
 .webgl {
     position: fixed;
     top: 0;
@@ -52,7 +51,7 @@ body {
     width: 100vw;
     height: 100vh;
     outline: none;
-    z-index: 1; /* 一番後ろ */
+    z-index: 1;
 }
 
 /* --- ヘッダーメニュー --- */
@@ -66,8 +65,8 @@ body {
 
 .site-header button {
     font-family: "DotGothic16", sans-serif;
-    background: rgba(255, 255, 255, 0);
-    border: 0px solid #ccc;
+    background: rgba(255, 255, 255, 0); /* ボタンの背景を少し見やすく */
+    border: 1px solid rgba(255,255,255,0);
     padding: 8px 16px;
     margin-left: 10px;
     border-radius: 20px;
@@ -76,11 +75,12 @@ body {
     font-weight: bold;
     color: #333;
     transition: all 0.3s ease;
-    pointer-events: auto; /* ボタンを押せるようにする */
+    pointer-events: auto;
 }
 
 .site-header button:hover {
-    color: #d6d6d6;
+    background: rgba(255, 255, 255, 0);
+    color: #8b8b8b;
     transform: translateY(-2px);
 }
 
@@ -91,69 +91,99 @@ body {
     z-index: 100;
 }
 
-/* --- 中央のテキストボックス（★スクロール対応版） --- */
+
+/* =========================================
+   オーバーレイ（テキストボックス）の設定
+   ========================================= */
+
+/* --- 1. ベースの共通設定 --- */
 .overlay-text {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* 画面のど真ん中に配置 */
+    transform: translate(-50%, -50%);
     
-    /* サイズとスクロール設定 */
-    width: 80%;           
-    max-width: 800px;     
-    max-height: 70vh;     /* 高さは画面の70%まで */
-    overflow-y: auto;     /* はみ出たらスクロールさせる */
-    
-    /* 見た目の設定 */
-    background: rgba(0, 0, 0, 0); /* 半透明の黒背景（文字を見やすく） */
-    padding: 40px;        
-    border-radius: 15px;  
-    
-    text-align: center;     
-    color: white;
+    /* 共通機能 */
+    overflow-y: auto;     /* スクロール有効 */
     z-index: 10;
+    pointer-events: auto; /* 操作有効 */
     
-    /* ★重要: スクロール操作を有効にする */
-    pointer-events: auto; 
-    
-    /* アニメーション設定 */
+    /* アニメーション */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease, visibility 0.5s ease;
+    
+    /* 基本の装飾 */
+    border-radius: 15px;
+    padding: 40px;
 }
 
-/* スクロールバーの装飾（Chrome/Safari用） */
-.overlay-text::-webkit-scrollbar {
-    width: 8px;
-}
-.overlay-text::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-.overlay-text::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-}
+/* スクロールバー装飾 */
+.overlay-text::-webkit-scrollbar { width: 8px; }
+.overlay-text::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+.overlay-text::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.5); border-radius: 4px; }
 
-/* テキスト内のスタイル */
+/* 共通テキストスタイル */
 .overlay-text h1 {
     font-size: 2.5rem;
     margin-bottom: 30px;
-    text-align: center;
     border-bottom: 1px solid rgba(255,255,255,0.3);
     padding-bottom: 10px;
 }
-
 .overlay-text p {
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 20px;
 }
-
-/* 表示状態のクラス */
 .overlay-text.visible {
     opacity: 1;
     visibility: visible;
+}
+
+
+/* --- 2. 個別のデザイン設定（★ここを編集） --- */
+
+/* F地点（プロローグ）：白っぽく、中央揃え */
+#content-f {
+    background: rgba(240, 240, 240, 0.5); 
+    color: #333; /* 文字色：黒 */
+    width: 60%;
+    max-width: 600px;
+    max-height: 60vh;
+    text-align: center;
+}
+/* F地点内の見出し線色調整 */
+#content-f h1 { border-bottom: 1px solid rgba(0,0,0,0.2); }
+
+
+/* C地点（第1章）：黒っぽく、左揃え */
+#content-c {
+    background: rgba(0, 0, 0, 0);
+    color: #fff; /* 文字色：白 */
+    width: 80%;
+    max-width: 500px;
+    max-height: 70vh;
+    text-align: center;
+}
+
+/* D地点（第2章） */
+#content-d {
+    background: rgba(0, 0, 0, 0);
+    color: #fff;
+    width: 80%;
+    max-width: 800px;
+    max-height: 60vh;
+    text-align: center;
+}
+
+/* E地点（第3章） */
+#content-e {
+    background: rgba(0, 0, 0, 0);
+    color: #fff;
+    width: 80%;
+    max-width: 800px;
+    max-height: 60vh;
+    text-align: center;
 }
 
 
@@ -163,54 +193,34 @@ body {
     opacity: 0;
     visibility: hidden;
     z-index: 10;
-    pointer-events: none; /* 画像はクリックを邪魔しない */
-
+    pointer-events: none;
     background: transparent;
     padding: 0;
     max-width: 450px;
     width: 100%;
-
-    /* いなくなる時の動き（速め） */
     transition: opacity 0.5s ease, visibility 0.2s ease, transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.overlay-corner img {
-    width: 100%;
-    display: block;
-}
+.overlay-corner img { width: 100%; display: block; }
+.left-bottom { bottom: 0; left: 0; transform: translateX(-100%); }
+.right-bottom { bottom: 0; right: 0; transform: translateX(100%); }
 
-/* 初期位置（画面外） */
-.left-bottom {
-    bottom: 0;
-    left: 0;
-    transform: translateX(-100%); /* 左に隠す */
-}
-
-.right-bottom {
-    bottom: 0;
-    right: 0;
-    transform: translateX(100%); /* 右に隠す */
-}
-
-/* 表示時の動き（ゆっくり） */
 .overlay-corner.visible {
     opacity: 1;
     visibility: visible;
-    transform: translateX(0); /* 定位置に戻る */
-    
-    /* 出てくる時の動きの設定（待ち時間あり） */
+    transform: translateX(0);
     transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.5s, opacity 1.2s ease 0.5s;
 }
 
-
-/* --- テキスト内のボタン位置調整 --- */
+/* --- ボタン位置とデザイン --- */
 .button-container {
-    text-align: center;   /* 中央寄せ */
-    margin-top: 60px;     /* 上の余白 */
-    margin-bottom: 20px;  /* 下の余白 */
+    display: flex;
+    justify-content: center; /* 中央寄せ */
+    margin-top: 60px;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
-/* ボタン自体のデザイン */
 .nav-button {
     padding: 10px 25px;
     font-size: 1.2rem;
@@ -222,69 +232,46 @@ body {
     pointer-events: auto;
     transition: transform 0.2s, background-color 0.2s;
 }
-
-.nav-button:hover {
-    transform: scale(1.1);
-    background-color: #eee;
-}
-
-.nav-button:active {
-    transform: scale(0.95);
-}
-
+.nav-button:hover { transform: scale(1.1); background-color: #eee; }
+.nav-button:active { transform: scale(0.95); }
 
 /* --- フォント設定 --- */
-.chapter1 {
-    font-family: "Zen Kurenaido", sans-serif;
-}
+.chapter1{ 
+    font-family: "Zen Kurenaido", sans-serif; }
+.chapter2{ 
+    font-family: "DotGothic16", sans-serif; }
+.chapter3{ 
+    font-family: "Noto Sans JP", sans-serif;}
 
-.chapter1-p {
-    font-family: "Zen Kurenaido", sans-serif;
-    text-align: left;
-}
-.chapter2 {
-    font-family: "DotGothic16", sans-serif;
-}
-.chapter2-p {
-    font-family: "DotGothic16", sans-serif;
-    text-align: left;
-}
-.chapter3 {
+
+.chapter1-p { 
+    font-family: "Zen Kurenaido", sans-serif; 
+    text-align: left;}
+.chapter2-p { 
+    font-family: "DotGothic16", sans-serif; 
+    text-align: left;}
+.chapter3-p { 
     font-family: "Noto Sans JP", sans-serif;
-}
-.chapter3-p {
-    font-family: "Noto Sans JP", sans-serif;
-    text-align: left;
-}
+    text-align: left; }
 
-
-
-/* --- タイプライター文字 --- */
+/* --- タイプライター --- */
 #typewriter-text {
     position: fixed;
-    top: 83%; /* 画面下部 */
+    top: 83%;
     left: 50%;
     transform: translate(-50%, -50%);
-
     font-family: "DotGothic16", sans-serif;
     font-size: 1.5rem;
     color: #333;
     letter-spacing: 0.1em;
     white-space: nowrap;
-
     z-index: 50;
     pointer-events: none;
 }
-
-/* 点滅カーソル */
 #typewriter-text::after {
     content: "|";
     animation: blink 1s infinite;
     opacity: 1;
     margin-left: 5px;
 }
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }

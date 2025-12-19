@@ -6,30 +6,29 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // 背景色の設定
 const defaultBgColor = new THREE.Color(0xf4f4f4);
-const colorF = new THREE.Color(0xDDDDDD); // ★追加: F地点の色（薄いグレー）
+const colorF = new THREE.Color(0xDDDDDD); // F地点（プロローグ）の色
 const colorC = new THREE.Color(0xE8DB7D);
 const colorD = new THREE.Color(0xE8974E);
 const colorE = new THREE.Color(0x6AC9DE);
 
 // カメラ座標の設定
 const posA = new THREE.Vector3(-22, 5, 14);
-const tarA = new THREE.Vector3(-2, 0, 0);
+const tarA = new THREE.Vector3(-2, 5, 0);
 
-// ★追加: 地点F（AとBの間）
-const posF = new THREE.Vector3(0, 15, 20); 
-const tarF = new THREE.Vector3(0, -1, 0);
+const posF = new THREE.Vector3(-15, 10, 20); 
+const tarF = new THREE.Vector3(-2, -1, 0);
 
 const posB = new THREE.Vector3(0, 3, 20);
 const tarB = new THREE.Vector3(0, -1, 0);
 
-const posC = new THREE.Vector3(-11.18, 0.7, -0.5);
-const tarC = new THREE.Vector3(-11.18, -1, -0.501);
+const posC = new THREE.Vector3(-11.18, 0.7, -0.38);
+const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
 const posD = new THREE.Vector3(0, 0, 1.5);
 const tarD = new THREE.Vector3(0, 0, -10);
 
-const posE = new THREE.Vector3(10.92, 0, 1.3);
-const tarE = new THREE.Vector3(10.92, 0, -10);
+const posE = new THREE.Vector3(10.92, 0.1, 1.3);
+const tarE = new THREE.Vector3(10.92, 0.1, -10);
 
 // 現在地管理
 let currentLocation = 'A';
@@ -38,7 +37,7 @@ let currentLocation = 'A';
 const flatContent = document.getElementById('flat-content');
 
 // コンテンツ
-const contentF       = document.getElementById('content-f'); // ★追加
+const contentF       = document.getElementById('content-f');
 const contentD       = document.getElementById('content-d');
 const contentC       = document.getElementById('content-c');
 const contentE       = document.getElementById('content-e');
@@ -58,19 +57,21 @@ if (typewriterContent) {
 }
 
 // 空間内のボタン
-const btnToBFromF = document.getElementById('btn-to-b-from-f'); // ★追加: FからBへのボタン
+const btnToBFromF = document.getElementById('btn-to-b-from-f'); 
 const btnToD = document.getElementById('btn-to-d');
 const btnToE = document.getElementById('btn-to-e');
-const btnToB = document.getElementById('btn-to-b'); // 戻るボタン等
+const btnToB = document.getElementById('btn-to-b');
 
-// ヘッダーナビ
+// ヘッダーナビ（★ここに追加しました）
 const navBtnB = document.getElementById('nav-btn-b');
+const navBtnF = document.getElementById('nav-btn-f'); // ★追加
 const navBtnC = document.getElementById('nav-btn-c');
 const navBtnD = document.getElementById('nav-btn-d');
 const navBtnE = document.getElementById('nav-btn-e');
 
-// ----------------
 
+// ----------------
+// Three.js 初期化
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(defaultBgColor);
 
@@ -114,7 +115,7 @@ function updateContentVisibility(location) {
     if(contentE_Left)  contentE_Left.classList.remove('visible');
     if(contentE_Right) contentE_Right.classList.remove('visible');
 
-    if(contentF)       contentF.classList.remove('visible'); // ★追加
+    if(contentF)       contentF.classList.remove('visible');
     if(contentD)       contentD.classList.remove('visible');
     if(contentC)       contentC.classList.remove('visible');
     if(contentE)       contentE.classList.remove('visible');
@@ -123,7 +124,7 @@ function updateContentVisibility(location) {
 
     // 2. 表示
     if (location === 'F') {
-        if(contentF) contentF.classList.add('visible'); // ★追加
+        if(contentF) contentF.classList.add('visible');
     }
     else if (location === 'D') {
         if(contentD_Left)  contentD_Left.classList.add('visible');
@@ -174,9 +175,10 @@ function executeMove(targetPos, targetLook, newLocationName) {
     clearTypewriter();
     updateContentVisibility(null); 
 
+    // 0.5秒待って（消えるのを待って）から移動
     setTimeout(() => {
         let targetColor = defaultBgColor;
-        if (newLocationName === 'F') targetColor = colorF; // ★追加
+        if (newLocationName === 'F') targetColor = colorF;
         else if (newLocationName === 'C') targetColor = colorC;
         else if (newLocationName === 'D') targetColor = colorD;
         else if (newLocationName === 'E') targetColor = colorE;
@@ -216,11 +218,10 @@ function executeMove(targetPos, targetLook, newLocationName) {
                 if (currentLocation === 'B') {
                     controls.enableRotate = true;
                     controls.rotateSpeed = 0.2; 
-                    // B地点でのみタイプライターを表示
                     startTypewriter("Click anywhere to begin");
                 } 
-                else if (currentLocation === 'F') { // ★追加
-                    controls.enableRotate = true; // Fでも少し回せてもいいかも
+                else if (currentLocation === 'F') {
+                    controls.enableRotate = true;
                     controls.rotateSpeed = 0.2;
                 }
                 else if (['C', 'D', 'E'].includes(currentLocation)) {
@@ -240,27 +241,23 @@ function executeMove(targetPos, targetLook, newLocationName) {
 
 // --- ボタンイベント ---
 
-// ★追加: FからBへ行くボタン
+// 空間内のボタン
 if (btnToBFromF) {
     btnToBFromF.addEventListener('click', (e) => {
         e.stopPropagation();
         executeMove(posB, tarB, 'B');
     });
 }
+if (btnToD) { btnToD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posD, tarD, 'D'); }); }
+if (btnToE) { btnToE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); }); }
+if (btnToB) { btnToB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
 
-// 他のボタン
-if (btnToD) {
-    btnToD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posD, tarD, 'D'); });
-}
-if (btnToE) {
-    btnToE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); });
-}
-if (btnToB) {
-    btnToB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); });
-}
-
-// ヘッダー
+// ヘッダーナビ
 if (navBtnB) { navBtnB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
+
+// ★追加: ヘッダーのFボタン
+if (navBtnF) { navBtnF.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posF, tarF, 'F'); }); }
+
 if (navBtnC) { navBtnC.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posC, tarC, 'C'); }); }
 if (navBtnD) { navBtnD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posD, tarD, 'D'); }); }
 if (navBtnE) { navBtnE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); }); }
@@ -277,7 +274,7 @@ function startExperience() {
         flatContent.classList.add('hidden');
     }
     
-    // ★変更: 最初は B ではなく F に行く
+    // 最初は F (プロローグ) へ
     executeMove(posF, tarF, 'F');
 }
 
@@ -301,11 +298,9 @@ window.addEventListener('mouseup', (event) => {
 
     const clickRatio = event.clientX / window.innerWidth;
 
-    // A地点からはFへ（基本はstartExperienceで動くが念のため）
     if (currentLocation === 'A') {
         executeMove(posF, tarF, 'F');
     }
-    // ★追加: F地点からもクリックでBへ行けるようにする
     else if (currentLocation === 'F') {
         executeMove(posB, tarB, 'B');
     }
