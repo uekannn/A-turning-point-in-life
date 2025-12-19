@@ -17,8 +17,8 @@ const tarA = new THREE.Vector3(-2, 0, 0);
 const posB = new THREE.Vector3(0, 3, 20);
 const tarB = new THREE.Vector3(0, -1, 0);
 
-const posC = new THREE.Vector3(-11.18, 0.7, -0.5);
-const tarC = new THREE.Vector3(-11.18, -1, -0.501);
+const posC = new THREE.Vector3(-11.18, 0.3, -0.38);
+const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
 const posD = new THREE.Vector3(0, 0, 1.5);
 const tarD = new THREE.Vector3(0, 0, -10);
