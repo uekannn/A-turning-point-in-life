@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,18 +11,22 @@
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New&family=Zen+Kurenaido&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New&family=Zen+Kurenaido&display=swap"
+        rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@100..900&family=Zen+Kaku+Gothic+New&family=Zen+Kurenaido&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@100..900&family=Zen+Kaku+Gothic+New&family=Zen+Kurenaido&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
 
     <section id="flat-content">
         <div class="container">
             <h1 style="color: #f7f7f7; text-align: left;">今日からエンジニア</h1>
-            <h1 style="font-size: 15px; color: #f7f7f7; text-align: left;" >
+            <h1 style="font-size: 15px; color: #f7f7f7; text-align: left;">
                 aiiiiiiiiaiufvoaivoaihvo<br>
                 lkaoikbmvaoiniajvo<br>
                 akimaounvaonfoavoiavoi<br>
@@ -31,7 +36,7 @@
                 ijgnerunahvoavoi;<br>
 
                 {<br>
-                    ijgnfdanbiauvoavoi;<br>
+                ijgnfdanbiauvoavoi;<br>
 
                 }<br>
                 aobnvaunjunijgnerunahvoavoi;<br>
@@ -44,12 +49,13 @@
                 /ajax/libs/gsap/3.12.5/gsap<br>
                 ax/libs/gsap/3.12.5/ScrollTrigger.min.<br>
 
-                iahvooavihooiavo,  iahvoii;</h1>
-            </div>
+                iahvooavihooiavo, iahvoii;
+            </h1>
+        </div>
     </section>
 
     <canvas class="webgl"></canvas>
-  
+
     <header class="site-header">
         <nav>
             <button id="nav-btn-b">ホーム</button>
@@ -60,8 +66,8 @@
     </header>
 
 
-    <div class="logo" >
-         <img src="人生の転機_ロゴ.png" alt="左の画像" width="200px">
+    <div class="logo">
+        <img src="人生の転機_ロゴ.png" alt="ロゴの画像" width="200px">
     </div>
 
     <div id="typewriter-text"></div>
@@ -69,18 +75,28 @@
 
 
     <div id="content-c" class="overlay-text" style="color: #333;">
-    <h1 class="chapter1" >第1章</h1>
-    <p class="chapter1">子ども編</p>
-    <button id="btn-to-d" class="nav-button chapter1">第2章へ</button>
+        <h1 class="chapter1">第1章</h1>
+        <p class="chapter1">〜高校生編</p>
+        <button id="btn-to-d" class="nav-button chapter1">第2章へ</button>
     </div>
-    
-    <div id="content-d" class="overlay-text">
-    <h1 class="chapter2">第2章</h1>
-    <p class="chapter2">社会人編</p>
-    <button id="btn-to-e" class="nav-button chapter2">第3章へ</button>
-</div>
 
-  <div id="content-d-left" class="overlay-corner left-bottom">
+
+    <div id="content-c-left" class="overlay-corner left-bottom">
+        <img src="c-interviewer.png" alt="C Left Image">
+    </div>
+
+    <div id="content-c-right" class="overlay-corner right-bottom">
+        <img src="d-interviewee.png" alt="C Right Image">
+    </div>
+
+
+    <div id="content-d" class="overlay-text">
+        <h1 class="chapter2">第2章</h1>
+        <p class="chapter2">社会人編</p>
+        <button id="btn-to-e" class="nav-button chapter2">第3章へ</button>
+    </div>
+
+    <div id="content-d-left" class="overlay-corner left-bottom">
         <img src="d-interviewer.gif" alt="左の画像">
     </div>
 
@@ -89,12 +105,19 @@
     </div>
 
 
-<div id="content-e" class="overlay-text">
-    <h1 class="chapter3">第3章</h1>
-    <p class="chapter3">退職後編</p>
-    <button id="btn-to-b" class="nav-button chapter3">ホームに戻る</button>
-</div>
+    <div id="content-e" class="overlay-text">
+        <h1 class="chapter3">第3章</h1>
+        <p class="chapter3">退職後編</p>
+        <button id="btn-to-b" class="nav-button chapter3">ホームに戻る</button>
+    </div>
 
+    <div id="content-e-left" class="overlay-corner left-bottom">
+        <img src="c-interviewer.png" alt="E Left Image">
+    </div>
+
+    <div id="content-e-right" class="overlay-corner right-bottom">
+        <img src="d-interviewee.png" alt="E Right Image">
+    </div>
 
 
     <script type="importmap">
@@ -105,9 +128,21 @@
             }
         }
     </script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <script type="module" src="main.js"></script>
 </body>
+
 </html>
+
+
+
+
+<div id="content-e-left" class="overlay-corner left-bottom">
+    <img src="e-left.png" alt="E Left Image">
+</div>
+
+<div id="content-e-right" class="overlay-corner right-bottom">
+    <img src="e-right.png" alt="E Right Image">
+</div>

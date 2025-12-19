@@ -83,8 +83,8 @@ body {
     font-family: "DotGothic16", sans-serif;
     font-weight: 400;
     font-style: normal;
-    background: rgba(255, 255, 255, 0.5); /* 少し背景を入れて見やすく */
-    border: 1px solid #ccc; /* 境界線を追加 */
+    background: rgba(255, 255, 255, 0); /* 少し背景を入れて見やすく */
+    border: 0px solid #ccc; /* 境界線を追加 */
     padding: 8px 16px;
     margin-left: 10px;
     border-radius: 20px;
@@ -98,8 +98,7 @@ body {
 }
 
 .site-header button:hover {
-    background: #333;
-    color: #fff;
+    color: #d6d6d6;
     transform: translateY(-2px);
 }
 
@@ -112,20 +111,24 @@ body {
     padding: 0;
 }
 
+/* style.css */
+
 /* --- オーバーレイの共通設定 --- */
 .overlay-corner {
     position: fixed;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
     z-index: 10;
     pointer-events: none;
     
     background: transparent;
     padding: 0;
-    
     max-width: 450px;
     width: 100%;
+
+    /* ★変更: transform（移動）のアニメーションを追加 */
+    /* ease-out にすると「シュッ」と出て「ピタッ」と止まる感じで心地よいです */
+    transition: opacity 0.5s ease, visibility 0.2s ease, transform 1.0s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .overlay-corner img {
@@ -133,6 +136,46 @@ body {
     display: block;
     margin: 0;
 }
+
+
+/* --- 配置と初期位置の設定 --- */
+
+/* 左下 */
+.left-bottom {
+    bottom: 0;
+    left: 0;
+    /* ★追加: 最初は画面の「左側」に隠しておく (-100%) */
+    transform: translateX(-100%);
+}
+
+/* 右下 */
+.right-bottom {
+    bottom: 0;
+    right: 0;
+    /* ★追加: 最初は画面の「右側」に隠しておく (+100%) */
+    transform: translateX(100%);
+}
+
+
+/* --- 表示用クラス --- */
+.overlay-corner.visible {
+    opacity: 1;
+    visibility: visible;
+    
+    /* ★追加: 表示されたら「元の位置 (0)」に戻ってくる */
+    transform: translateX(0);
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1) 0.5s, opacity 1.2s ease -2.0s;
+}
+
+
+
+
+
+
+
+
+
+
 
 /* --- テキスト表示用の共通設定 --- */
 .overlay-text {

@@ -14,7 +14,7 @@ const colorE = new THREE.Color(0x6AC9DE);
 const posA = new THREE.Vector3(-22, 2, 14);
 const tarA = new THREE.Vector3(-2, 0, 0);
 
-const posB = new THREE.Vector3(0, 3, 25);
+const posB = new THREE.Vector3(0, 3, 17);
 const tarB = new THREE.Vector3(0, -1, 0);
 
 const posC = new THREE.Vector3(-11.18, 0.7, -0.5);
@@ -32,16 +32,24 @@ let currentLocation = 'A';
 // --- HTML要素の取得 ---
 const flatContent = document.getElementById('flat-content');
 
-// コンテンツ
-const contentD_Left  = document.getElementById('content-d-left');
-const contentD_Right = document.getElementById('content-d-right');
+// コンテンツ（テキストなど）
 const contentD       = document.getElementById('content-d');
 const contentC       = document.getElementById('content-c');
 const contentE       = document.getElementById('content-e');
 
+// ★★★ 追加・修正: 左右のスライド画像たち ★★★
+const contentD_Left  = document.getElementById('content-d-left');
+const contentD_Right = document.getElementById('content-d-right');
+
+const contentC_Left  = document.getElementById('content-c-left');
+const contentC_Right = document.getElementById('content-c-right');
+
+const contentE_Left  = document.getElementById('content-e-left');
+const contentE_Right = document.getElementById('content-e-right');
+
+
 // タイプライター用の要素
 const typewriterContent = document.getElementById('typewriter-text');
-// ★重要: 最初は隠しておく
 if (typewriterContent) {
     typewriterContent.style.display = 'none';
 }
@@ -93,36 +101,49 @@ loader.load('./model.glb', (gltf) => {
 }, undefined, (err) => console.error(err));
 
 
-// --- 表示切り替え関数 ---
+// ★★★ 表示切り替え関数（C, D, E 全対応版） ★★★
 function updateContentVisibility(location) {
+    // 1. まず全部の画像を隠す（重要）
     if(contentD_Left)  contentD_Left.classList.remove('visible');
     if(contentD_Right) contentD_Right.classList.remove('visible');
+    
+    if(contentC_Left)  contentC_Left.classList.remove('visible');
+    if(contentC_Right) contentC_Right.classList.remove('visible');
+    
+    if(contentE_Left)  contentE_Left.classList.remove('visible');
+    if(contentE_Right) contentE_Right.classList.remove('visible');
+
+    // テキストも隠す
     if(contentD)       contentD.classList.remove('visible');
     if(contentC)       contentC.classList.remove('visible');
     if(contentE)       contentE.classList.remove('visible');
 
+    // 2. 現在地に合わせて表示
     if (location === 'D') {
         if(contentD_Left)  contentD_Left.classList.add('visible');
         if(contentD_Right) contentD_Right.classList.add('visible');
         if(contentD)       contentD.classList.add('visible');
     } 
     else if (location === 'C') {
-        if(contentC) contentC.classList.add('visible');
+        // C地点用の画像を表示
+        if(contentC_Left)  contentC_Left.classList.add('visible');
+        if(contentC_Right) contentC_Right.classList.add('visible');
+        if(contentC)       contentC.classList.add('visible');
     } 
     else if (location === 'E') {
-        if(contentE) contentE.classList.add('visible');
+        // E地点用の画像を表示
+        if(contentE_Left)  contentE_Left.classList.add('visible');
+        if(contentE_Right) contentE_Right.classList.add('visible');
+        if(contentE)       contentE.classList.add('visible');
     }
 }
 
-// ★★★ タイプライター関数（修正版） ★★★
+// --- タイプライター関数 ---
 let typewriterTimeout;
 
 function startTypewriter(text) {
     if (!typewriterContent) return;
-    
-    // ★重要: 開始するときに表示する
     typewriterContent.style.display = 'block';
-    
     typewriterContent.innerHTML = '';
     clearTimeout(typewriterTimeout);
 
@@ -139,36 +160,29 @@ function startTypewriter(text) {
 
 function clearTypewriter() {
     if (typewriterContent) {
-        // ★重要: 消すときは箱ごと非表示にする（これでカーソルも消える）
         typewriterContent.style.display = 'none';
-        
         typewriterContent.innerHTML = '';
         clearTimeout(typewriterTimeout);
     }
 }
 
 
-// ★★★ 移動実行関数 ★★★
+// --- 移動実行関数 ---
 function executeMove(targetPos, targetLook, newLocationName) {
     controls.enabled = false; 
-
-    // 移動開始したらタイプライターは即座に隠す
     clearTypewriter();
 
-    // 背景色の決定
     let targetColor = defaultBgColor;
     if (newLocationName === 'C') targetColor = colorC;
     else if (newLocationName === 'D') targetColor = colorD;
     else if (newLocationName === 'E') targetColor = colorE;
 
-    // 背景色アニメーション
     gsap.to(scene.background, {
         r: targetColor.r, g: targetColor.g, b: targetColor.b,
         duration: 2.5,
         ease: "power2.inOut"
     });
 
-    // 曲線移動
     const startPos = camera.position.clone();
     const controlPos = startPos.clone().lerp(targetPos, 0.5);
     controlPos.z += 15; 
@@ -195,14 +209,10 @@ function executeMove(targetPos, targetLook, newLocationName) {
             currentLocation = newLocationName;
             controls.enabled = true;
 
-            // 回転設定の更新
             if (currentLocation === 'B') {
                 controls.enableRotate = true;
                 controls.rotateSpeed = 0.2; 
-                
-                // B地点に着いたら表示開始
                 startTypewriter("Click anywhere to begin");
-
             } else if (['C', 'D', 'E'].includes(currentLocation)) {
                 controls.enableRotate = false;
             } else {
@@ -210,16 +220,14 @@ function executeMove(targetPos, targetLook, newLocationName) {
                 controls.rotateSpeed = 0.5;
             }
 
-            // 文字・画像の表示更新
             updateContentVisibility(currentLocation);
-            
             console.log(`Moved to: ${currentLocation}`);
         }
     });
 }
 
 
-// --- 空間内のボタンのクリックイベント ---
+// --- 空間内のボタン ---
 if (btnToD) {
     btnToD.addEventListener('click', (e) => {
         e.stopPropagation(); 
@@ -239,7 +247,7 @@ if (btnToB) {
     });
 }
 
-// --- ヘッダーメニューのクリックイベント ---
+// --- ヘッダーメニュー ---
 if (navBtnB) {
     navBtnB.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -266,7 +274,7 @@ if (navBtnE) {
 }
 
 
-// --- Welcome画面からのスタートロジック ---
+// --- Welcome画面からのスタート ---
 let hasStarted = false;
 
 function startExperience() {
@@ -292,7 +300,7 @@ if (flatContent) {
 }
 
 
-// --- 画面全体のクリックイベント ---
+// --- 画面全体のクリック ---
 let isDragging = false;
 window.addEventListener('mousedown', () => { isDragging = false; });
 window.addEventListener('mousemove', () => { isDragging = true; });
