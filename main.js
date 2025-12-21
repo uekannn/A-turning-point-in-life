@@ -27,8 +27,8 @@ const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 const posD = new THREE.Vector3(0, 0, 2);
 const tarD = new THREE.Vector3(0, 0, -10);
 
-const posE = new THREE.Vector3(10.92, 0.1, 1.3);
-const tarE = new THREE.Vector3(10.92, 0.1, -10);
+const posE = new THREE.Vector3(12.125, 0.1, 1.3);
+const tarE = new THREE.Vector3(12.125, 0.1, -10);
 
 // 現在地管理
 let currentLocation = 'A';

@@ -361,5 +361,5 @@ body {
       transparent 0%: 中心は透明（元の色がそのまま見える）
       rgba(0, 0, 0, 0.5) 100%: 外側は50%の黒（暗くなる）
     */
-    background: radial-gradient(circle at center, transparent 0%, rgba(134, 134, 134, 0.3) 150%);
+    background: radial-gradient(circle at center, transparent 0%, rgba(134, 134, 134, 0.3) 200%);
 }
