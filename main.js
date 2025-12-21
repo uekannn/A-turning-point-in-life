@@ -18,7 +18,7 @@ const tarA = new THREE.Vector3(-2, 4, 0);
 const posF = new THREE.Vector3(-15, 9, 20); 
 const tarF = new THREE.Vector3(-2, -2, 0);
 
-const posB = new THREE.Vector3(0, 3, 20);
+const posB = new THREE.Vector3(0, 1.5, 20);
 const tarB = new THREE.Vector3(0, -1, 0);
 
 const posC = new THREE.Vector3(-11.18, 0.7, -0.38);
@@ -36,19 +36,26 @@ let currentLocation = 'A';
 // --- HTML要素の取得 ---
 const flatContent = document.getElementById('flat-content');
 
-// コンテンツ
+// コンテンツ（テキストボックス）
 const contentF       = document.getElementById('content-f');
 const contentD       = document.getElementById('content-d');
 const contentC       = document.getElementById('content-c');
 const contentE       = document.getElementById('content-e');
 
-// 左右のスライド画像
+// 左右のスライド画像（C, D, E地点用）
 const contentD_Left  = document.getElementById('content-d-left');
 const contentD_Right = document.getElementById('content-d-right');
 const contentC_Left  = document.getElementById('content-c-left');
 const contentC_Right = document.getElementById('content-c-right');
 const contentE_Left  = document.getElementById('content-e-left');
 const contentE_Right = document.getElementById('content-e-right');
+
+// B地点用の中央画像（★これを使用）
+const contentB_Center = document.getElementById('content-b-center');
+
+// B地点専用の穴マスク
+const holeB = document.getElementById('hole-b');
+
 
 // タイプライター
 const typewriterContent = document.getElementById('typewriter-text');
@@ -62,9 +69,9 @@ const btnToD = document.getElementById('btn-to-d');
 const btnToE = document.getElementById('btn-to-e');
 const btnToB = document.getElementById('btn-to-b');
 
-// ヘッダーナビ（★ここに追加しました）
+// ヘッダーナビ
 const navBtnB = document.getElementById('nav-btn-b');
-const navBtnF = document.getElementById('nav-btn-f'); // ★追加
+const navBtnF = document.getElementById('nav-btn-f');
 const navBtnC = document.getElementById('nav-btn-c');
 const navBtnD = document.getElementById('nav-btn-d');
 const navBtnE = document.getElementById('nav-btn-e');
@@ -105,9 +112,11 @@ loader.load('./model.glb', (gltf) => {
 }, undefined, (err) => console.error(err));
 
 
-// ★★★ 表示切り替え関数 ★★★
+// ★★★ 表示切り替え関数（拡大演出対応） ★★★
 function updateContentVisibility(location) {
-    // 1. 全部隠す
+    // --- 1. 他の要素を隠す処理 ---
+    
+    // 左右スライド画像（C,D,E）は単純に隠す
     if(contentD_Left)  contentD_Left.classList.remove('visible');
     if(contentD_Right) contentD_Right.classList.remove('visible');
     if(contentC_Left)  contentC_Left.classList.remove('visible');
@@ -115,15 +124,45 @@ function updateContentVisibility(location) {
     if(contentE_Left)  contentE_Left.classList.remove('visible');
     if(contentE_Right) contentE_Right.classList.remove('visible');
 
+    // テキストボックスも単純に隠す
     if(contentF)       contentF.classList.remove('visible');
     if(contentD)       contentD.classList.remove('visible');
     if(contentC)       contentC.classList.remove('visible');
     if(contentE)       contentE.classList.remove('visible');
 
-    if (!location) return;
+    // 穴マスクも単純に隠す
+    if(holeB) holeB.classList.remove('visible');
 
-    // 2. 表示
-    if (location === 'F') {
+    // ★重要: B地点の中央画像（退場アニメーション処理）
+    if(contentB_Center) {
+        // もし今「表示中(.visible)」なら、クラスを付け替えて「退場中(.hiding)」にする
+        // これによりCSSの拡大アニメーションが発動します
+        if (contentB_Center.classList.contains('visible')) {
+            contentB_Center.classList.remove('visible');
+            contentB_Center.classList.add('hiding');
+        } 
+        // もし既に表示されていないなら、念の為 .visible だけ外しておく
+        else {
+            contentB_Center.classList.remove('visible');
+        }
+    }
+
+
+    if (!location) return; // 移動開始直後の呼び出しならここで終了
+
+    // --- 2. 現在地に合わせて表示する処理 ---
+    if (location === 'B') {
+        // ★変更: B地点の中央画像を表示
+        if(contentB_Center) {
+            // 退場アニメーション用のクラスが残っていたら消す
+            contentB_Center.classList.remove('hiding');
+            // 表示用のクラスをつける（フェードイン）
+            contentB_Center.classList.add('visible');
+        }
+        // 穴マスクを表示
+        if(holeB) holeB.classList.add('visible');
+    }
+    else if (location === 'F') {
         if(contentF) contentF.classList.add('visible');
     }
     else if (location === 'D') {
@@ -173,15 +212,18 @@ function clearTypewriter() {
 function executeMove(targetPos, targetLook, newLocationName) {
     controls.enabled = false; 
     clearTypewriter();
+    
+    // 移動開始時に一旦コンテンツの状態を更新（ここでB画像の拡大アニメが始まります）
     updateContentVisibility(null); 
 
-    // 0.5秒待って（消えるのを待って）から移動
+    // 0.5秒待ってからカメラ移動開始
     setTimeout(() => {
         let targetColor = defaultBgColor;
         if (newLocationName === 'F') targetColor = colorF;
         else if (newLocationName === 'C') targetColor = colorC;
         else if (newLocationName === 'D') targetColor = colorD;
         else if (newLocationName === 'E') targetColor = colorE;
+        // B地点の色は defaultBgColor のまま
 
         gsap.to(scene.background, {
             r: targetColor.r, g: targetColor.g, b: targetColor.b,
@@ -231,6 +273,7 @@ function executeMove(targetPos, targetLook, newLocationName) {
                     controls.rotateSpeed = 0.5;
                 }
 
+                // 移動完了後に新しい場所のコンテンツを表示
                 updateContentVisibility(currentLocation);
                 console.log(`Moved to: ${currentLocation}`);
             }
@@ -254,10 +297,7 @@ if (btnToB) { btnToB.addEventListener('click', (e) => { e.stopPropagation(); exe
 
 // ヘッダーナビ
 if (navBtnB) { navBtnB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
-
-// ★追加: ヘッダーのFボタン
 if (navBtnF) { navBtnF.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posF, tarF, 'F'); }); }
-
 if (navBtnC) { navBtnC.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posC, tarC, 'C'); }); }
 if (navBtnD) { navBtnD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posD, tarD, 'D'); }); }
 if (navBtnE) { navBtnE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); }); }
