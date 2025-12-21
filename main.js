@@ -27,8 +27,8 @@ const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 const posD = new THREE.Vector3(0, 0, 2);
 const tarD = new THREE.Vector3(0, 0, -10);
 
-const posE = new THREE.Vector3(12.125, 0.1, 1.3);
-const tarE = new THREE.Vector3(12.125, 0.1, -10);
+const posE = new THREE.Vector3(12.05, 0.1, 1);
+const tarE = new THREE.Vector3(12.05, 0.1, -10);
 
 // 現在地管理
 let currentLocation = 'A';
@@ -50,8 +50,9 @@ const contentC_Right = document.getElementById('content-c-right');
 const contentE_Left  = document.getElementById('content-e-left');
 const contentE_Right = document.getElementById('content-e-right');
 
-// B地点用の中央画像（★これを使用）
+// 全画面画像（B地点用 & F地点用）
 const contentB_Center = document.getElementById('content-b-center');
+const contentF_Center = document.getElementById('content-f-center'); // ★追加
 
 // B地点専用の穴マスク
 const holeB = document.getElementById('hole-b');
@@ -112,11 +113,11 @@ loader.load('./model.glb', (gltf) => {
 }, undefined, (err) => console.error(err));
 
 
-// ★★★ 表示切り替え関数（拡大演出対応） ★★★
+// ★★★ 表示切り替え関数 ★★★
 function updateContentVisibility(location) {
     // --- 1. 他の要素を隠す処理 ---
     
-    // 左右スライド画像（C,D,E）は単純に隠す
+    // 左右スライド画像（C,D,E）
     if(contentD_Left)  contentD_Left.classList.remove('visible');
     if(contentD_Right) contentD_Right.classList.remove('visible');
     if(contentC_Left)  contentC_Left.classList.remove('visible');
@@ -124,26 +125,34 @@ function updateContentVisibility(location) {
     if(contentE_Left)  contentE_Left.classList.remove('visible');
     if(contentE_Right) contentE_Right.classList.remove('visible');
 
-    // テキストボックスも単純に隠す
+    // テキストボックス
     if(contentF)       contentF.classList.remove('visible');
     if(contentD)       contentD.classList.remove('visible');
     if(contentC)       contentC.classList.remove('visible');
     if(contentE)       contentE.classList.remove('visible');
 
-    // 穴マスクも単純に隠す
+    // 穴マスク
     if(holeB) holeB.classList.remove('visible');
 
-    // ★重要: B地点の中央画像（退場アニメーション処理）
+    // --- 全画面画像の退場アニメーション処理 ---
+    
+    // B地点の画像
     if(contentB_Center) {
-        // もし今「表示中(.visible)」なら、クラスを付け替えて「退場中(.hiding)」にする
-        // これによりCSSの拡大アニメーションが発動します
         if (contentB_Center.classList.contains('visible')) {
             contentB_Center.classList.remove('visible');
             contentB_Center.classList.add('hiding');
-        } 
-        // もし既に表示されていないなら、念の為 .visible だけ外しておく
-        else {
+        } else {
             contentB_Center.classList.remove('visible');
+        }
+    }
+    
+    // ★追加: F地点の画像
+    if(contentF_Center) {
+        if (contentF_Center.classList.contains('visible')) {
+            contentF_Center.classList.remove('visible');
+            contentF_Center.classList.add('hiding');
+        } else {
+            contentF_Center.classList.remove('visible');
         }
     }
 
@@ -152,11 +161,9 @@ function updateContentVisibility(location) {
 
     // --- 2. 現在地に合わせて表示する処理 ---
     if (location === 'B') {
-        // ★変更: B地点の中央画像を表示
+        // B地点の中央画像を表示
         if(contentB_Center) {
-            // 退場アニメーション用のクラスが残っていたら消す
             contentB_Center.classList.remove('hiding');
-            // 表示用のクラスをつける（フェードイン）
             contentB_Center.classList.add('visible');
         }
         // 穴マスクを表示
@@ -164,6 +171,12 @@ function updateContentVisibility(location) {
     }
     else if (location === 'F') {
         if(contentF) contentF.classList.add('visible');
+        
+        // ★追加: F地点の中央画像を表示
+        if(contentF_Center) {
+            contentF_Center.classList.remove('hiding');
+            contentF_Center.classList.add('visible');
+        }
     }
     else if (location === 'D') {
         if(contentD_Left)  contentD_Left.classList.add('visible');
@@ -213,17 +226,16 @@ function executeMove(targetPos, targetLook, newLocationName) {
     controls.enabled = false; 
     clearTypewriter();
     
-    // 移動開始時に一旦コンテンツの状態を更新（ここでB画像の拡大アニメが始まります）
+    // 移動開始（画像の退場アニメ開始）
     updateContentVisibility(null); 
 
-    // 0.5秒待ってからカメラ移動開始
+    // 0.5秒待ってから移動
     setTimeout(() => {
         let targetColor = defaultBgColor;
         if (newLocationName === 'F') targetColor = colorF;
         else if (newLocationName === 'C') targetColor = colorC;
         else if (newLocationName === 'D') targetColor = colorD;
         else if (newLocationName === 'E') targetColor = colorE;
-        // B地点の色は defaultBgColor のまま
 
         gsap.to(scene.background, {
             r: targetColor.r, g: targetColor.g, b: targetColor.b,
@@ -273,7 +285,7 @@ function executeMove(targetPos, targetLook, newLocationName) {
                     controls.rotateSpeed = 0.5;
                 }
 
-                // 移動完了後に新しい場所のコンテンツを表示
+                // 移動完了後（画像の入場アニメ開始）
                 updateContentVisibility(currentLocation);
                 console.log(`Moved to: ${currentLocation}`);
             }
