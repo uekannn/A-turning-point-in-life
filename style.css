@@ -87,15 +87,10 @@ body {
 
 .logo {
     position: fixed;
-    top: 10px;
+    top: 0px;
     left: 10px;
     z-index: 100;
 }
-
-
-/* =========================================
-   オーバーレイ（テキストボックス）の設定
-   ========================================= */
 
 /* --- 1. ベースの共通設定 --- */
 .overlay-text {
@@ -362,7 +357,7 @@ body {
       transparent 0%: 中心は透明（元の色がそのまま見える）
       rgba(0, 0, 0, 0.5) 100%: 外側は50%の黒（暗くなる）
     */
-    background: radial-gradient(circle at center, transparent 0%, rgba(225, 225, 225, 0.3) 200%);
+    background: radial-gradient(circle at center, transparent 0%, rgba(91, 91, 91, 0.3) 180%);
 }
 
 /* --- 中央フェードイン画像（画面全体版・縮小入場＆拡大退場エフェクト） --- */
