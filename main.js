@@ -6,17 +6,17 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // 背景色の設定
 const defaultBgColor = new THREE.Color(0xf4f4f4);
-const colorF = new THREE.Color(0xDDDDDD); // F地点（プロローグ）の色
+const colorF = new THREE.Color(0xDDDDDD);
 const colorC = new THREE.Color(0xE8DB7D);
 const colorD = new THREE.Color(0xE8974E);
 const colorE = new THREE.Color(0x6AC9DE);
 
 // カメラ座標の設定
-const posA = new THREE.Vector3(-22, 5, 14);
-const tarA = new THREE.Vector3(-2, 5, 0);
+const posA = new THREE.Vector3(-25, 4, 16);
+const tarA = new THREE.Vector3(-2, 4, 0);
 
-const posF = new THREE.Vector3(-15, 10, 20); 
-const tarF = new THREE.Vector3(-2, -1, 0);
+const posF = new THREE.Vector3(-15, 9, 20); 
+const tarF = new THREE.Vector3(-2, -2, 0);
 
 const posB = new THREE.Vector3(0, 3, 20);
 const tarB = new THREE.Vector3(0, -1, 0);
@@ -24,7 +24,7 @@ const tarB = new THREE.Vector3(0, -1, 0);
 const posC = new THREE.Vector3(-11.18, 0.7, -0.38);
 const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
-const posD = new THREE.Vector3(0, 0, 1.5);
+const posD = new THREE.Vector3(0, 0, 2);
 const tarD = new THREE.Vector3(0, 0, -10);
 
 const posE = new THREE.Vector3(10.92, 0.1, 1.3);
