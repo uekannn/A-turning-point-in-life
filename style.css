@@ -85,6 +85,19 @@ body {
     transform: translateY(-2px);
 }
 
+.site-footer {
+    font-family: "DotGothic16", sans-serif;
+    position: fixed;
+    text-align: center;
+    z-index: 3;
+
+    padding: 5px;
+    bottom: 0;    
+    left: 0;     
+    width: 100%; 
+    background-color: #f4f4f4;
+}
+
 .logo {
     position: fixed;
     top: 0px;
@@ -102,7 +115,7 @@ body {
     /* 共通機能 */
     overflow-y: auto;
     /* スクロール有効 */
-    z-index: 10;
+    z-index: 2;
     pointer-events: auto;
     /* 操作有効 */
 
@@ -357,7 +370,7 @@ body {
       transparent 0%: 中心は透明（元の色がそのまま見える）
       rgba(0, 0, 0, 0.5) 100%: 外側は50%の黒（暗くなる）
     */
-    background: radial-gradient(circle at center, transparent 0%, rgba(91, 91, 91, 0.3) 180%);
+    background: radial-gradient(circle at center, transparent 0%, rgba(91, 91, 91, 0.4) 180%);
 }
 
 /* --- 中央フェードイン画像（画面全体版・縮小入場＆拡大退場エフェクト） --- */

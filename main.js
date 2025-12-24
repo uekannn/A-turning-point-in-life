@@ -52,7 +52,7 @@ const contentE_Right = document.getElementById('content-e-right');
 
 // 全画面画像（B地点用 & F地点用）
 const contentB_Center = document.getElementById('content-b-center');
-const contentF_Center = document.getElementById('content-f-center'); // ★追加
+const contentF_Center = document.getElementById('content-f-center');
 
 // B地点専用の穴マスク
 const holeB = document.getElementById('hole-b');
@@ -146,7 +146,7 @@ function updateContentVisibility(location) {
         }
     }
     
-    // ★追加: F地点の画像
+    // F地点の画像
     if(contentF_Center) {
         if (contentF_Center.classList.contains('visible')) {
             contentF_Center.classList.remove('visible');
@@ -172,7 +172,7 @@ function updateContentVisibility(location) {
     else if (location === 'F') {
         if(contentF) contentF.classList.add('visible');
         
-        // ★追加: F地点の中央画像を表示
+        // F地点の中央画像を表示
         if(contentF_Center) {
             contentF_Center.classList.remove('hiding');
             contentF_Center.classList.add('visible');
@@ -348,8 +348,7 @@ window.addEventListener('mouseup', (event) => {
     if (!hasStarted) return;
     if (event.target.tagName === 'BUTTON') return;
 
-    const clickRatio = event.clientX / window.innerWidth;
-
+    // 現在地ごとのクリック時の移動先設定
     if (currentLocation === 'A') {
         executeMove(posF, tarF, 'F');
     }
@@ -357,9 +356,8 @@ window.addEventListener('mouseup', (event) => {
         executeMove(posB, tarB, 'B');
     }
     else if (currentLocation === 'B') {
-        if (clickRatio < 0.33) executeMove(posC, tarC, 'C');
-        else if (clickRatio > 0.66) executeMove(posE, tarE, 'E');
-        else executeMove(posD, tarD, 'D');
+        // ★修正箇所: 画面のどこをクリックしてもC地点へ移動
+        executeMove(posC, tarC, 'C');
     } 
 });
 
