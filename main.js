@@ -15,7 +15,7 @@ const colorE = new THREE.Color(0x8fd2e4);
 const posA = new THREE.Vector3(-25, 4, 16);
 const tarA = new THREE.Vector3(-2, 4, 0);
 
-const posF = new THREE.Vector3(-15, 9, 20); 
+const posF = new THREE.Vector3(-15, 7, 20); 
 const tarF = new THREE.Vector3(-2, -2, 0);
 
 const posB = new THREE.Vector3(0, 1.5, 20);

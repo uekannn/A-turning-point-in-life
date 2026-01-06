@@ -385,48 +385,35 @@ body {
   margin: 0;
   }
 
-  /* --- ホバー切り替え用のスタイル --- */
-
-/* 画像のコンテナ */
-.hover-container {
-  position: relative; /* 子要素を絶対配置するための基準にする */
-  /* 既存の .slide-content に width/height が設定されていればそのままでOK */
-  /* もしサイズが崩れる場合は、ここで明示的に指定してください */
-  /* 例: width: 400px; height: 300px; */
+  /* --- 1. 配置の魔法（親箱） --- */
+.container {
+  display: flex;           /* 子要素を横並びにする */
+  justify-content: center; /* 中央寄せ（お好みで space-between 等に変更可） */
+  gap: 20px;               /* 画像と画像の間の隙間 */
+  width: 100%;             /* 横幅いっぱい */
 }
 
-/* コンテナ内の画像共通設定 */
-.hover-container img {
-  position: absolute; /* 親要素の左上に重ねて配置 */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;    /* コンテナ枠に合わせてトリミング */
-  transition: opacity 0.5s ease; /* 0.5秒かけて滑らかに変化させる */
+/* --- 2. 画像の共通設定（サイズや表示方法） --- */
+.img-box {
+  width: 45%;              /* 2つ並べるので50%以下にする */
+  height: 600px;           /* 高さを指定（または aspect-ratio: 1/1;） */
+  background-size: cover;
+  background-position: center;
+  transition: 0.3s;        /* ふわっと切り替える場合に追加（任意） */
 }
 
-/* 通常時の画像（初期状態） */
-.hover-container .img-default {
-  opacity: 1; /* 見える */
-  z-index: 1; /* 後ろに配置 */
+/* --- 3. 1つ目の画像設定 --- */
+.img-1 {
+  background-image: url('./character-15.png'); /* 1枚目の通常画像 */
+}
+.img-1:hover {
+  background-image: url('./profile-13.png');   /* 1枚目のホバー画像 */
 }
 
-/* ホバー時の画像（初期状態） */
-.hover-container .img-hover {
-  opacity: 0; /* 透明にして隠しておく */
-  z-index: 2; /* 手前に配置 */
+/* --- 4. 2つ目の画像設定 --- */
+.img-2 {
+  background-image: url('./character-16.png');    /* 2枚目の通常画像 */
 }
-
-/* --- ホバーした時の動作 --- */
-
-/* コンテナにマウスが乗ったら、ホバー画像を不透明にする */
-.hover-container:hover .img-hover {
-  opacity: 1;
-}
-
-/* コンテナにマウスが乗ったら、通常画像を透明にする */
-/* (これを書くとクロスフェードになります。上の記述だけでも動作はします) */
-.hover-container:hover .img-default {
-  opacity: 0;
+.img-2:hover {
+  background-image: url('./profile-14.png');    /* 2枚目のホバー画像 */
 }
