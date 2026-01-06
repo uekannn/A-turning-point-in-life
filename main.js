@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // 背景色の設定
 const defaultBgColor = new THREE.Color(0xf4f4f4);
-const colorF = new THREE.Color(0xDDDDDD);
+const colorF = new THREE.Color(0xf4f4f4);
 const colorC = new THREE.Color(0xE8DB7D);
 const colorD = new THREE.Color(0xE8974E);
 const colorE = new THREE.Color(0x6AC9DE);
@@ -42,7 +42,7 @@ const contentD       = document.getElementById('content-d');
 const contentC       = document.getElementById('content-c');
 const contentE       = document.getElementById('content-e');
 
-// 左右のスライド画像（C, D, E地点用）
+// 左右のスライド画像
 const contentD_Left  = document.getElementById('content-d-left');
 const contentD_Right = document.getElementById('content-d-right');
 const contentC_Left  = document.getElementById('content-c-left');
@@ -50,13 +50,12 @@ const contentC_Right = document.getElementById('content-c-right');
 const contentE_Left  = document.getElementById('content-e-left');
 const contentE_Right = document.getElementById('content-e-right');
 
-// 全画面画像（B地点用 & F地点用）
+// 全画面画像
 const contentB_Center = document.getElementById('content-b-center');
 const contentF_Center = document.getElementById('content-f-center');
 
-// B地点専用の穴マスク
+// 穴マスク
 const holeB = document.getElementById('hole-b');
-
 
 // タイプライター
 const typewriterContent = document.getElementById('typewriter-text');
@@ -64,13 +63,17 @@ if (typewriterContent) {
     typewriterContent.style.display = 'none';
 }
 
+// ヘッダーナビ & スクロール監視
+const headerNav = document.querySelector('.site-header'); 
+let scrollAmountF = 0; 
+
 // 空間内のボタン
 const btnToBFromF = document.getElementById('btn-to-b-from-f'); 
 const btnToD = document.getElementById('btn-to-d');
 const btnToE = document.getElementById('btn-to-e');
 const btnToB = document.getElementById('btn-to-b');
 
-// ヘッダーナビ
+// ヘッダーナビボタン
 const navBtnB = document.getElementById('nav-btn-b');
 const navBtnF = document.getElementById('nav-btn-f');
 const navBtnC = document.getElementById('nav-btn-c');
@@ -117,7 +120,7 @@ loader.load('./model.glb', (gltf) => {
 function updateContentVisibility(location) {
     // --- 1. 他の要素を隠す処理 ---
     
-    // 左右スライド画像（C,D,E）
+    // 左右スライド画像
     if(contentD_Left)  contentD_Left.classList.remove('visible');
     if(contentD_Right) contentD_Right.classList.remove('visible');
     if(contentC_Left)  contentC_Left.classList.remove('visible');
@@ -135,8 +138,6 @@ function updateContentVisibility(location) {
     if(holeB) holeB.classList.remove('visible');
 
     // --- 全画面画像の退場アニメーション処理 ---
-    
-    // B地点の画像
     if(contentB_Center) {
         if (contentB_Center.classList.contains('visible')) {
             contentB_Center.classList.remove('visible');
@@ -146,7 +147,6 @@ function updateContentVisibility(location) {
         }
     }
     
-    // F地点の画像
     if(contentF_Center) {
         if (contentF_Center.classList.contains('visible')) {
             contentF_Center.classList.remove('visible');
@@ -156,23 +156,18 @@ function updateContentVisibility(location) {
         }
     }
 
-
     if (!location) return; // 移動開始直後の呼び出しならここで終了
 
     // --- 2. 現在地に合わせて表示する処理 ---
     if (location === 'B') {
-        // B地点の中央画像を表示
         if(contentB_Center) {
             contentB_Center.classList.remove('hiding');
             contentB_Center.classList.add('visible');
         }
-        // 穴マスクを表示
         if(holeB) holeB.classList.add('visible');
     }
     else if (location === 'F') {
         if(contentF) contentF.classList.add('visible');
-        
-        // F地点の中央画像を表示
         if(contentF_Center) {
             contentF_Center.classList.remove('hiding');
             contentF_Center.classList.add('visible');
@@ -228,6 +223,29 @@ function executeMove(targetPos, targetLook, newLocationName) {
     
     // 移動開始（画像の退場アニメ開始）
     updateContentVisibility(null); 
+
+    // ▼▼▼ ヘッダーと背景透明度のリセット処理 ▼▼▼
+    if (headerNav) {
+        if (newLocationName === 'F') {
+            // Fへ行く時: ヘッダーを隠す & スクロール量リセット
+            headerNav.classList.remove('visible');
+            scrollAmountF = 0;
+
+            // Fの背景を初期値（半透明 0.5）に戻す
+            if (contentF) {
+                contentF.style.backgroundColor = 'rgba(240, 240, 240, 0.5)';
+            }
+        } else {
+            // それ以外へ行く時: ヘッダーを表示
+            headerNav.classList.add('visible');
+            
+            // 背景色のスタイルをリセット（CSS依存に戻す）
+            if (contentF) {
+                contentF.style.backgroundColor = '';
+            }
+        }
+    }
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
     // 0.5秒待ってから移動
     setTimeout(() => {
@@ -330,7 +348,39 @@ function startExperience() {
     executeMove(posF, tarF, 'F');
 }
 
-window.addEventListener('wheel', () => { if (!hasStarted) startExperience(); });
+window.addEventListener('wheel', (e) => { 
+    if (!hasStarted) startExperience(); 
+
+    // ▼▼▼ F地点：スクロールによるヘッダー表示 & 背景透明度の制御 ▼▼▼
+    if (currentLocation === 'F' && headerNav) {
+        // 下にスクロール(deltaY > 0)で加算
+        scrollAmountF += e.deltaY;
+        if (scrollAmountF < 0) scrollAmountF = 0; // マイナス防止
+        
+        // 1. ヘッダー表示制御（300px以上で表示）
+        if (scrollAmountF > 300) {
+            headerNav.classList.add('visible');
+        } else {
+            // 上に戻したら隠したい場合
+            // headerNav.classList.remove('visible');
+        }
+
+        // 2. 背景透明度の制御（0.5 〜 1.0 に変化）
+        if (contentF) {
+            // 0px〜500pxの間で変化させる
+            const maxScroll = 500;
+            // 進行度（0.0 〜 1.0）
+            const ratio = Math.min(scrollAmountF / maxScroll, 1);
+            
+            // alpha = 0.5 + (0.5 * 進行度) -> 最終的に 1.0 になる
+            const newAlpha = 0.5 + (ratio * 0.5);
+            
+            contentF.style.backgroundColor = `rgba(240, 240, 240, ${newAlpha})`;
+        }
+    }
+    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+});
+
 window.addEventListener('touchstart', () => { if (!hasStarted) startExperience(); });
 if (flatContent) {
     flatContent.addEventListener('click', () => { if (!hasStarted) startExperience(); });
@@ -356,7 +406,6 @@ window.addEventListener('mouseup', (event) => {
         executeMove(posB, tarB, 'B');
     }
     else if (currentLocation === 'B') {
-        // ★修正箇所: 画面のどこをクリックしてもC地点へ移動
         executeMove(posC, tarC, 'C');
     } 
 });

@@ -53,20 +53,33 @@ body {
     z-index: 1;
 }
 
-/* --- ヘッダーメニュー --- */
+/* --- ヘッダーメニュー（修正版） --- */
 .site-header {
     font-family: "DotGothic16", sans-serif;
     position: fixed;
     top: 20px;
     right: 30px;
     z-index: 100;
-    background-color: #f4f4f4;
+    background-color: transparent; /* 背景透明化 */
+
+    /* ▼▼▼ アニメーション用設定 ▼▼▼ */
+    /* 初期状態：画面上に隠しておく */
+    transform: translateY(-200%);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+    pointer-events: none; /* 隠れている時はクリック不可 */
+}
+
+/* 表示状態のクラス */
+.site-header.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .site-header button {
     font-family: "DotGothic16", sans-serif;
     background: rgba(255, 255, 255, 0);
-    /* ボタンの背景を少し見やすく */
     border: 1px solid rgba(255, 255, 255, 0);
     padding: 8px 16px;
     margin-left: 10px;
@@ -81,8 +94,8 @@ body {
 
 .site-header button:hover {
     background: rgba(255, 255, 255, 0);
-    color: #8b8b8b;
-    transform: translateY(-2px);
+    color: #5c5c5c;
+    transform: translateY(-4px);
 }
 
 .site-footer {
@@ -90,7 +103,6 @@ body {
     position: fixed;
     text-align: center;
     z-index: 3;
-
     padding: 5px;
     bottom: 0;    
     left: 0;     
@@ -105,31 +117,28 @@ body {
     z-index: 100;
 }
 
+.chapter0{
+    max-width: 500px;
+    width: 100%;
+}
+
+
 /* --- 1. ベースの共通設定 --- */
 .overlay-text {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    /* 共通機能 */
     overflow-y: auto;
-    /* スクロール有効 */
-    z-index: 2;
+    z-index: 11;
     pointer-events: auto;
-    /* 操作有効 */
-
-    /* アニメーション */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease, visibility 0.5s ease;
-
-    /* 基本の装飾 */
     border-radius: 15px;
     padding: 40px;
 }
 
-/* スクロールバー装飾 */
 .overlay-text::-webkit-scrollbar {
     width: 8px;
 }
@@ -144,7 +153,6 @@ body {
     border-radius: 4px;
 }
 
-/* 共通テキストスタイル */
 .overlay-text h1 {
     font-size: 2.5rem;
     margin-bottom: 30px;
@@ -164,29 +172,26 @@ body {
 }
 
 
-/* --- 2. 個別のデザイン設定（★ここを編集） --- */
+/* --- 2. 個別のデザイン設定 --- */
 
-/* F地点（プロローグ）：白っぽく、中央揃え */
+/* F地点（プロローグ） */
 #content-f {
     background: rgba(240, 240, 240, 0.5);
     color: #333;
-    /* 文字色：黒 */
     width: 100%;
     max-height: 100vh;
     text-align: center;
+    padding: 0;
+    margin: 0;
 }
-
-/* F地点内の見出し線色調整 */
 #content-f h1 {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-
-/* C地点（第1章）：黒っぽく、左揃え */
+/* C地点（第1章） */
 #content-c {
     background: rgba(0, 0, 0, 0);
     color: #fff;
-    /* 文字色：白 */
     width: 80%;
     max-width: 500px;
     max-height: 70vh;
@@ -256,7 +261,6 @@ body {
 .button-container {
     display: flex;
     justify-content: center;
-    /* 中央寄せ */
     margin-top: 60px;
     margin-bottom: 20px;
     width: 100%;
@@ -284,40 +288,22 @@ body {
 }
 
 /* --- フォント設定 --- */
-.intro {
+.intro, .intro-p {
     font-family: "Noto Sans JP", sans-serif;
-
-}
-
-.chapter1 {
-    font-family: "Zen Kurenaido", sans-serif;
-}
-
-.chapter2 {
-    font-family: "DotGothic16", sans-serif;
-}
-
-.chapter3 {
-    font-family: "Noto Sans JP", sans-serif;
-}
-
-.intro-p {
-    font-family: "Noto Sans JP", sans-serif;
-
     text-align: center;
 }
 
-.chapter1-p {
+.chapter1, .chapter1-p {
     font-family: "Zen Kurenaido", sans-serif;
     text-align: left;
 }
 
-.chapter2-p {
+.chapter2, .chapter2-p {
     font-family: "DotGothic16", sans-serif;
     text-align: left;
 }
 
-.chapter3-p {
+.chapter3, .chapter3-p {
     font-family: "Noto Sans JP", sans-serif;
     text-align: left;
 }
@@ -345,15 +331,8 @@ body {
 }
 
 @keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 
@@ -363,33 +342,21 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none; /* これがないとクリックできなくなる（重要） */
-    z-index: 2; /* WebGL(1)より上、コンテンツ(10)より下 */
-    
-    /* radial-gradient: 円形のグラデーション
-      transparent 0%: 中心は透明（元の色がそのまま見える）
-      rgba(0, 0, 0, 0.5) 100%: 外側は50%の黒（暗くなる）
-    */
+    pointer-events: none;
+    z-index: 2;
     background: radial-gradient(circle at center, transparent 0%, rgba(91, 91, 91, 0.4) 180%);
 }
 
-/* --- 中央フェードイン画像（画面全体版・縮小入場＆拡大退場エフェクト） --- */
+/* --- 中央フェードイン画像 --- */
 .center-fade-image {
     position: fixed;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
     z-index: 15;
     pointer-events: none;
-
-    /* --- 基本状態（非表示・★少し拡大しておく） --- */
     opacity: 0;
     visibility: hidden;
-    
-    /* ★ここがポイント: 最初は1.1倍の大きさにしておく */
     transform: scale(1.1); 
-
-    /* 現れる時のアニメーション（ゆっくりフェードイン＋ゆっくり縮小） */
-    /* transformの時間も1.5秒に合わせて、ゆっくり動かします */
     transition: opacity 1.5s ease-out, visibility 1.5s ease-out, transform 1.5s ease-out;
 }
 
@@ -399,24 +366,25 @@ body {
     display: block;
 }
 
-/* --- 表示状態（B地点にいる時） --- */
 .center-fade-image.visible {
     opacity: 1;
     visibility: visible;
-    
-    /* ★ここで標準サイズ(1倍)に戻る＝「縮小しながら現れる」動きになる */
     transform: scale(1); 
     position: fixed;
 }
 
-/* --- 退場状態（B地点から去る時） --- */
 .center-fade-image.hiding {
     opacity: 0;
     visibility: visible;
-    
-    /* さらに拡大させて消える (1.2倍くらいまで) */
     transform: scale(1.2); 
-
-    /* 消える時のアニメーション（少し早めに） */
     transition: opacity 1.0s ease-in, transform 1.0s ease-in, visibility 1.0s linear;
 }
+
+
+.back {
+  position: sticky;
+  top: 0px; /* 上端から何pxの位置で固定するか */
+  z-index: -100; /* 他の要素より手前に表示 */
+  padding: 0;
+  margin: 0;
+  }
