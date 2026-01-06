@@ -7,9 +7,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // 背景色の設定
 const defaultBgColor = new THREE.Color(0xf4f4f4);
 const colorF = new THREE.Color(0xf4f4f4);
-const colorC = new THREE.Color(0xE8DB7D);
-const colorD = new THREE.Color(0xE8974E);
-const colorE = new THREE.Color(0x6AC9DE);
+const colorC = new THREE.Color(0xf7e88d);
+const colorD = new THREE.Color(0xf3a061);
+const colorE = new THREE.Color(0x8fd2e4);
 
 // カメラ座標の設定
 const posA = new THREE.Vector3(-25, 4, 16);
