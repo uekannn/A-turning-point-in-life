@@ -21,7 +21,7 @@ const tarF = new THREE.Vector3(-2, -2, 0);
 const posB = new THREE.Vector3(0, 1.5, 20);
 const tarB = new THREE.Vector3(0, -1, 0);
 
-const posC = new THREE.Vector3(-11.18, 0.7, -0.38);
+const posC = new THREE.Vector3(-11.18, 0.85, -0.38);
 const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
 const posD = new THREE.Vector3(0, 0, 2);
@@ -202,7 +202,7 @@ function startTypewriter(text) {
         if (i < text.length) {
             typewriterContent.innerHTML += text.charAt(i);
             i++;
-            typewriterTimeout = setTimeout(typing, 100); 
+            typewriterTimeout = setTimeout(typing, 80); 
         }
     }
     typing();
