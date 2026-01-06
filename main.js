@@ -233,7 +233,7 @@ function executeMove(targetPos, targetLook, newLocationName) {
 
             // Fの背景を初期値（半透明 0.5）に戻す
             if (contentF) {
-                contentF.style.backgroundColor = 'rgba(240, 240, 240, 0.5)';
+                contentF.style.backgroundColor = 'rgba(240, 240, 240, 0.2)';
             }
         } else {
             // それ以外へ行く時: ヘッダーを表示
@@ -373,7 +373,7 @@ window.addEventListener('wheel', (e) => {
             const ratio = Math.min(scrollAmountF / maxScroll, 1);
             
             // alpha = 0.5 + (0.5 * 進行度) -> 最終的に 1.0 になる
-            const newAlpha = 0.5 + (ratio * 0.5);
+            const newAlpha = 0.2 + (ratio * 0.8);
             
             contentF.style.backgroundColor = `rgba(240, 240, 240, ${newAlpha})`;
         }
