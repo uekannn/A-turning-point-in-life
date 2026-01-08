@@ -226,20 +226,20 @@ function executeMove(targetPos, targetLook, newLocationName) {
 
     // ▼▼▼ ヘッダーと背景透明度のリセット処理 ▼▼▼
     if (headerNav) {
+        // ★変更点: 場所に関係なくヘッダーは常に表示 (.visible を追加)
+        headerNav.classList.add('visible');
+
         if (newLocationName === 'F') {
-            // Fへ行く時: ヘッダーを隠す & スクロール量リセット
-            headerNav.classList.remove('visible');
+            // Fへ行く時: スクロール量をリセット
             scrollAmountF = 0;
 
-            // Fの背景を初期値（半透明 0.5）に戻す
+            // Fの背景を初期値（半透明 0.2）に戻す
             if (contentF) {
                 contentF.style.backgroundColor = 'rgba(240, 240, 240, 0.2)';
             }
         } else {
-            // それ以外へ行く時: ヘッダーを表示
-            headerNav.classList.add('visible');
-            
-            // 背景色のスタイルをリセット（CSS依存に戻す）
+            // それ以外へ行く時:
+            // 背景色のスタイルをリセット（CSS定義に戻す）
             if (contentF) {
                 contentF.style.backgroundColor = '';
             }
@@ -325,7 +325,7 @@ if (btnToD) { btnToD.addEventListener('click', (e) => { e.stopPropagation(); exe
 if (btnToE) { btnToE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); }); }
 if (btnToB) { btnToB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
 
-// ヘッダーナビ
+// ヘッダーナビボタン
 if (navBtnB) { navBtnB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
 if (navBtnF) { navBtnF.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posF, tarF, 'F'); }); }
 if (navBtnC) { navBtnC.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posC, tarC, 'C'); }); }
@@ -344,6 +344,11 @@ function startExperience() {
         flatContent.classList.add('hidden');
     }
     
+    // ★追加点: 開始時にヘッダーを必ず表示
+    if (headerNav) {
+        headerNav.classList.add('visible');
+    }
+
     // 最初は F (プロローグ) へ
     executeMove(posF, tarF, 'F');
 }
@@ -351,30 +356,20 @@ function startExperience() {
 window.addEventListener('wheel', (e) => { 
     if (!hasStarted) startExperience(); 
 
-    // ▼▼▼ F地点：スクロールによるヘッダー表示 & 背景透明度の制御 ▼▼▼
-    if (currentLocation === 'F' && headerNav) {
+    // ▼▼▼ F地点：背景透明度の制御のみ残す（ヘッダー制御は削除） ▼▼▼
+    if (currentLocation === 'F') {
         // 下にスクロール(deltaY > 0)で加算
         scrollAmountF += e.deltaY;
         if (scrollAmountF < 0) scrollAmountF = 0; // マイナス防止
         
-        // 1. ヘッダー表示制御（300px以上で表示）
-        if (scrollAmountF > 300) {
-            headerNav.classList.add('visible');
-        } else {
-            // 上に戻したら隠したい場合
-            // headerNav.classList.remove('visible');
-        }
+        // ヘッダー表示制御のif文は削除済み
 
-        // 2. 背景透明度の制御（0.5 〜 1.0 に変化）
+        // 背景透明度の制御（0.2 〜 1.0 に変化）
         if (contentF) {
             // 0px〜500pxの間で変化させる
             const maxScroll = 500;
-            // 進行度（0.0 〜 1.0）
             const ratio = Math.min(scrollAmountF / maxScroll, 1);
-            
-            // alpha = 0.5 + (0.5 * 進行度) -> 最終的に 1.0 になる
             const newAlpha = 0.2 + (ratio * 0.8);
-            
             contentF.style.backgroundColor = `rgba(240, 240, 240, ${newAlpha})`;
         }
     }
@@ -431,7 +426,7 @@ window.onload = function() {
 
     // 安全策：要素がなければ強制スタート
     if (!loopVideo || !introVideo) {
-        loadingScreen.classList.add('loaded');
+        if(loadingScreen) loadingScreen.classList.add('loaded');
         startExperience();
         return;
     }
@@ -448,7 +443,7 @@ window.onload = function() {
     // ▼ STEP 2: イントロ動画が終わったら ▼
     introVideo.onended = function() {
         // 1. ローディング画面全体をフェードアウト
-        loadingScreen.classList.add('loaded');
+        if(loadingScreen) loadingScreen.classList.add('loaded');
 
         // 2. Three.jsのカメラ移動スタート（少し遅らせて余韻を作る）
         setTimeout(() => {
