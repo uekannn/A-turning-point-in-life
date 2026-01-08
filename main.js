@@ -15,7 +15,7 @@ const colorE = new THREE.Color(0x8fd2e4);
 const posA = new THREE.Vector3(-25, 4, 16);
 const tarA = new THREE.Vector3(-2, 0, 0);
 
-const posF = new THREE.Vector3(-15, 7, 20); 
+const posF = new THREE.Vector3(-15, 5, 20); 
 const tarF = new THREE.Vector3(-2, -2, 0);
 
 const posB = new THREE.Vector3(0, 1.5, 20);
@@ -235,7 +235,7 @@ function executeMove(targetPos, targetLook, newLocationName) {
 
             // Fの背景を初期値（半透明 0.2）に戻す
             if (contentF) {
-                contentF.style.backgroundColor = 'rgba(240, 240, 240, 0.2)';
+                contentF.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
             }
         } else {
             // それ以外へ行く時:
@@ -367,10 +367,10 @@ window.addEventListener('wheel', (e) => {
         // 背景透明度の制御（0.2 〜 1.0 に変化）
         if (contentF) {
             // 0px〜500pxの間で変化させる
-            const maxScroll = 500;
+            const maxScroll = 300;
             const ratio = Math.min(scrollAmountF / maxScroll, 1);
             const newAlpha = 0.2 + (ratio * 0.8);
-            contentF.style.backgroundColor = `rgba(240, 240, 240, ${newAlpha})`;
+            contentF.style.backgroundColor = `rgba(255, 255, 255, ${newAlpha})`;
         }
     }
     // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
