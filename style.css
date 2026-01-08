@@ -11,6 +11,39 @@ body {
     background-color: #f4f4f4;
 }
 
+/* ローディング画面のスタイル */
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff; /* 動画読み込み前の背景色 */
+  z-index: 9999; /* 最前面に表示 */
+  transition: opacity 1s ease, visibility 1s ease; /* フェードアウト用 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+#loading video {
+    position: absolute; /* 重ね合わせるために絶対配置 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 読み込み完了時に付与するクラス */
+#loading.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; /* クリック無効化 */
+}
+
 /* --- Welcome画面 --- */
 #flat-content {
     position: fixed;

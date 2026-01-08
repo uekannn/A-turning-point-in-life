@@ -13,7 +13,7 @@ const colorE = new THREE.Color(0x8fd2e4);
 
 // カメラ座標の設定
 const posA = new THREE.Vector3(-25, 4, 16);
-const tarA = new THREE.Vector3(-2, 4, 0);
+const tarA = new THREE.Vector3(-2, 0, 0);
 
 const posF = new THREE.Vector3(-15, 7, 20); 
 const tarF = new THREE.Vector3(-2, -2, 0);
@@ -423,3 +423,36 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
+
+window.onload = function() {
+    const loadingScreen = document.getElementById('loading');
+    const loopVideo = document.getElementById('video-loop');
+    const introVideo = document.getElementById('video-intro');
+
+    // 安全策：要素がなければ強制スタート
+    if (!loopVideo || !introVideo) {
+        loadingScreen.classList.add('loaded');
+        startExperience();
+        return;
+    }
+
+    // ▼ STEP 1: ロード完了！選手交代 ▼
+    // ループ動画を止めて隠す
+    loopVideo.pause();
+    loopVideo.style.display = 'none';
+
+    // イントロ動画を表示して再生
+    introVideo.style.display = 'block';
+    introVideo.play().catch(e => console.log("再生エラー:", e));
+
+    // ▼ STEP 2: イントロ動画が終わったら ▼
+    introVideo.onended = function() {
+        // 1. ローディング画面全体をフェードアウト
+        loadingScreen.classList.add('loaded');
+
+        // 2. Three.jsのカメラ移動スタート（少し遅らせて余韻を作る）
+        setTimeout(() => {
+            startExperience();
+        }, 500); 
+    };
+}
