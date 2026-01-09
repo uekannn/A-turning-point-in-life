@@ -2,33 +2,63 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// --- 設定項目 ---
+// ==========================================
+//  レスポンシブ / 座標管理設定
+// ==========================================
 
-// 背景色の設定
+// スマホ判定（768px以下）
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// 座標取得用ヘルパー関数
+// defaultVec: PC用座標(x,y,z), mobileOffset: スマホ時の補正値(x,y,z)
+function getResponsivePos(x, y, z, offX = 0, offY = 0, offZ = 0) {
+    if (isMobile()) {
+        return new THREE.Vector3(x + offX, y + offY, z + offZ);
+    }
+    return new THREE.Vector3(x, y, z);
+}
+
+// --- カメラ座標の設定 (関数化) ---
+
+// A地点: スタート位置
+// スマホ時は少し右(x+5)＆後ろ(z+20)へ
+const getPosA = () => getResponsivePos(-25, 4, 16, -10, 0, 35);
+const tarA = new THREE.Vector3(-2, 0, 0);
+
+// F地点: プロローグ
+// スマホ時は少し上(y+2)＆後ろ(z+15)へ
+const getPosF = () => getResponsivePos(-15, 5, 20, -10, 2, 35);
+const tarF = new THREE.Vector3(-2, -2, 0);
+
+// B地点: メイン
+// スマホ時は後ろ(z+15)へ
+const getPosB = () => getResponsivePos(0, 1.5, 20, 0, 0, 35);
+const tarB = new THREE.Vector3(0, -1, 0);
+
+// C地点: 寄り画
+// スマホ時は少しだけ後ろ(z+2)へ
+const getPosC = () => getResponsivePos(-11.18, 0.85, -0.38, 0, 0, 2);
+const tarC = new THREE.Vector3(-11.18, -1, -0.381);
+
+// D地点: 左の部屋
+// スマホ時は後ろ(z+10)へ
+const getPosD = () => getResponsivePos(0, 0, 2, 0, 0, 10);
+const tarD = new THREE.Vector3(0, 0, -10);
+
+// E地点: 右の部屋
+// スマホ時は後ろ(z+10)へ
+const getPosE = () => getResponsivePos(12.05, 0.1, 1, 0, 0, 10);
+const tarE = new THREE.Vector3(12.05, 0.1, -10);
+
+
+// --- 背景色の設定 ---
 const defaultBgColor = new THREE.Color(0xf4f4f4);
 const colorF = new THREE.Color(0xf4f4f4);
 const colorC = new THREE.Color(0xf7e88d);
 const colorD = new THREE.Color(0xf3a061);
 const colorE = new THREE.Color(0x8fd2e4);
-
-// カメラ座標の設定
-const posA = new THREE.Vector3(-25, 4, 16);
-const tarA = new THREE.Vector3(-2, 0, 0);
-
-const posF = new THREE.Vector3(-15, 5, 20); 
-const tarF = new THREE.Vector3(-2, -2, 0);
-
-const posB = new THREE.Vector3(0, 1.5, 20);
-const tarB = new THREE.Vector3(0, -1, 0);
-
-const posC = new THREE.Vector3(-11.18, 0.85, -0.38);
-const tarC = new THREE.Vector3(-11.18, -1, -0.381);
-
-const posD = new THREE.Vector3(0, 0, 2);
-const tarD = new THREE.Vector3(0, 0, -10);
-
-const posE = new THREE.Vector3(12.05, 0.1, 1);
-const tarE = new THREE.Vector3(12.05, 0.1, -10);
 
 // 現在地管理
 let currentLocation = 'A';
@@ -87,7 +117,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(defaultBgColor);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.copy(posA);
+// 初期位置の設定（レスポンシブ対応）
+camera.position.copy(getPosA());
 
 const canvas = document.querySelector('.webgl');
 const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
@@ -216,8 +247,10 @@ function clearTypewriter() {
 }
 
 
-// ★★★ 移動実行関数 ★★★
-function executeMove(targetPos, targetLook, newLocationName) {
+// ★★★ 移動実行関数（レスポンシブ対応版） ★★★
+// targetLook: 注視点, newLocationName: 'F', 'B' などのエリア名
+// ※ targetPos引数は無視し、関数内で再計算します
+function executeMove(targetLook, newLocationName) {
     controls.enabled = false; 
     clearTypewriter();
     
@@ -226,34 +259,33 @@ function executeMove(targetPos, targetLook, newLocationName) {
 
     // ▼▼▼ ヘッダーと背景透明度のリセット処理 ▼▼▼
     if (headerNav) {
-        // ★変更点: 場所に関係なくヘッダーは常に表示 (.visible を追加)
         headerNav.classList.add('visible');
 
         if (newLocationName === 'F') {
-            // Fへ行く時: スクロール量をリセット
             scrollAmountF = 0;
-
-            // Fの背景を初期値（半透明 0.2）に戻す
             if (contentF) {
                 contentF.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
             }
         } else {
-            // それ以外へ行く時:
-            // 背景色のスタイルをリセット（CSS定義に戻す）
             if (contentF) {
                 contentF.style.backgroundColor = '';
             }
         }
     }
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
     // 0.5秒待ってから移動
     setTimeout(() => {
         let targetColor = defaultBgColor;
-        if (newLocationName === 'F') targetColor = colorF;
-        else if (newLocationName === 'C') targetColor = colorC;
-        else if (newLocationName === 'D') targetColor = colorD;
-        else if (newLocationName === 'E') targetColor = colorE;
+        
+        // ★レスポンシブ座標の再取得
+        // 画面サイズが変わっている可能性があるので、移動直前に正しい座標を取得する
+        let finalTargetPos;
+        if (newLocationName === 'F') { targetColor = colorF; finalTargetPos = getPosF(); }
+        else if (newLocationName === 'C') { targetColor = colorC; finalTargetPos = getPosC(); }
+        else if (newLocationName === 'D') { targetColor = colorD; finalTargetPos = getPosD(); }
+        else if (newLocationName === 'E') { targetColor = colorE; finalTargetPos = getPosE(); }
+        else if (newLocationName === 'B') { finalTargetPos = getPosB(); } // B地点
+        else { finalTargetPos = getPosA(); } // デフォルト
 
         gsap.to(scene.background, {
             r: targetColor.r, g: targetColor.g, b: targetColor.b,
@@ -262,10 +294,10 @@ function executeMove(targetPos, targetLook, newLocationName) {
         });
 
         const startPos = camera.position.clone();
-        const controlPos = startPos.clone().lerp(targetPos, 0.5);
+        const controlPos = startPos.clone().lerp(finalTargetPos, 0.5);
         controlPos.z += 15; 
 
-        const curve = new THREE.QuadraticBezierCurve3(startPos, controlPos, targetPos);
+        const curve = new THREE.QuadraticBezierCurve3(startPos, controlPos, finalTargetPos);
         const progress = { value: 0 };
 
         gsap.to(progress, {
@@ -312,25 +344,25 @@ function executeMove(targetPos, targetLook, newLocationName) {
 }
 
 
-// --- ボタンイベント ---
+// --- ボタンイベント (引数を簡略化) ---
 
 // 空間内のボタン
 if (btnToBFromF) {
     btnToBFromF.addEventListener('click', (e) => {
         e.stopPropagation();
-        executeMove(posB, tarB, 'B');
+        executeMove(tarB, 'B');
     });
 }
-if (btnToD) { btnToD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posD, tarD, 'D'); }); }
-if (btnToE) { btnToE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); }); }
-if (btnToB) { btnToB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
+if (btnToD) { btnToD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarD, 'D'); }); }
+if (btnToE) { btnToE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarE, 'E'); }); }
+if (btnToB) { btnToB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarB, 'B'); }); }
 
 // ヘッダーナビボタン
-if (navBtnB) { navBtnB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posB, tarB, 'B'); }); }
-if (navBtnF) { navBtnF.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posF, tarF, 'F'); }); }
-if (navBtnC) { navBtnC.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posC, tarC, 'C'); }); }
-if (navBtnD) { navBtnD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posD, tarD, 'D'); }); }
-if (navBtnE) { navBtnE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(posE, tarE, 'E'); }); }
+if (navBtnB) { navBtnB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarB, 'B'); }); }
+if (navBtnF) { navBtnF.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarF, 'F'); }); }
+if (navBtnC) { navBtnC.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarC, 'C'); }); }
+if (navBtnD) { navBtnD.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarD, 'D'); }); }
+if (navBtnE) { navBtnE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarE, 'E'); }); }
 
 
 // --- Welcome画面からのスタート ---
@@ -344,37 +376,56 @@ function startExperience() {
         flatContent.classList.add('hidden');
     }
     
-    // ★追加点: 開始時にヘッダーを必ず表示
+    // 開始時にヘッダーを必ず表示
     if (headerNav) {
         headerNav.classList.add('visible');
     }
 
     // 最初は F (プロローグ) へ
-    executeMove(posF, tarF, 'F');
+    executeMove(tarF, 'F');
 }
 
+// --- スクロール・タッチ操作の共通処理 ---
+function updateFLocationEffect(delta) {
+    if (currentLocation !== 'F') return;
+
+    // 加算
+    scrollAmountF += delta;
+    if (scrollAmountF < 0) scrollAmountF = 0; // マイナス防止
+    
+    // 背景透明度の制御（0.2 〜 1.0 に変化）
+    if (contentF) {
+        const maxScroll = 300;
+        const ratio = Math.min(scrollAmountF / maxScroll, 1);
+        const newAlpha = 0.2 + (ratio * 0.8);
+        contentF.style.backgroundColor = `rgba(255, 255, 255, ${newAlpha})`;
+    }
+}
+
+// PC: ホイールイベント
 window.addEventListener('wheel', (e) => { 
     if (!hasStarted) startExperience(); 
-
-    // ▼▼▼ F地点：背景透明度の制御のみ残す（ヘッダー制御は削除） ▼▼▼
-    if (currentLocation === 'F') {
-        // 下にスクロール(deltaY > 0)で加算
-        scrollAmountF += e.deltaY;
-        if (scrollAmountF < 0) scrollAmountF = 0; // マイナス防止
-        
-        // ヘッダー表示制御のif文は削除済み
-
-        // 背景透明度の制御（0.2 〜 1.0 に変化）
-        if (contentF) {
-            // 0px〜500pxの間で変化させる
-            const maxScroll = 300;
-            const ratio = Math.min(scrollAmountF / maxScroll, 1);
-            const newAlpha = 0.2 + (ratio * 0.8);
-            contentF.style.backgroundColor = `rgba(255, 255, 255, ${newAlpha})`;
-        }
-    }
-    // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+    updateFLocationEffect(e.deltaY);
 });
+
+// スマホ: タッチイベント
+let touchStartY = 0;
+window.addEventListener('touchstart', (e) => {
+    if (!hasStarted) startExperience();
+    touchStartY = e.touches[0].clientY;
+});
+window.addEventListener('touchmove', (e) => {
+    if (currentLocation !== 'F') return;
+    
+    const currentY = e.touches[0].clientY;
+    const diff = touchStartY - currentY; // 下に指を動かす(上スクロール)とマイナス、逆はプラス
+    
+    // スマホは移動量が大きいので感度調整
+    updateFLocationEffect(diff * 2.0);
+    
+    touchStartY = currentY;
+});
+
 
 window.addEventListener('touchstart', () => { if (!hasStarted) startExperience(); });
 if (flatContent) {
@@ -395,21 +446,42 @@ window.addEventListener('mouseup', (event) => {
 
     // 現在地ごとのクリック時の移動先設定
     if (currentLocation === 'A') {
-        executeMove(posF, tarF, 'F');
+        executeMove(tarF, 'F');
     }
     else if (currentLocation === 'F') {
-        executeMove(posB, tarB, 'B');
+        executeMove(tarB, 'B');
     }
     else if (currentLocation === 'B') {
-        executeMove(posC, tarC, 'C');
+        executeMove(tarC, 'C');
     } 
 });
 
+// --- リサイズ処理（レスポンシブ座標補正付き） ---
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // リサイズ時に現在の場所の正しい座標へカメラを補正する
+    if (controls.enabled && hasStarted) {
+        let newPos;
+        switch(currentLocation) {
+            case 'F': newPos = getPosF(); break;
+            case 'B': newPos = getPosB(); break;
+            case 'C': newPos = getPosC(); break;
+            case 'D': newPos = getPosD(); break;
+            case 'E': newPos = getPosE(); break;
+            default:  newPos = getPosA();
+        }
+        
+        // アニメーションでスムーズに補正位置へ移動
+        gsap.to(camera.position, {
+            x: newPos.x, y: newPos.y, z: newPos.z,
+            duration: 0.5,
+            ease: "power2.out"
+        });
+    }
 });
 
 function animate() {
