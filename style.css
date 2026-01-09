@@ -11,25 +11,23 @@ body {
     background-color: #f4f4f4;
 }
 
-/* ローディング画面のスタイル */
+/* --- ローディング画面 --- */
 #loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #fff; /* 動画読み込み前の背景色 */
-  z-index: 9999; /* 最前面に表示 */
-  transition: opacity 1s ease, visibility 1s ease; /* フェードアウト用 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 9999;
+    transition: opacity 1s ease, visibility 1s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-
-
 #loading video {
-    position: absolute; /* 重ね合わせるために絶対配置 */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -37,11 +35,10 @@ body {
     object-fit: cover;
 }
 
-/* 読み込み完了時に付与するクラス */
 #loading.loaded {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none; /* クリック無効化 */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 /* --- Welcome画面 --- */
@@ -83,53 +80,139 @@ body {
     width: 100vw;
     height: 100vh;
     outline: none;
-    z-index: 1;
+    z-index: 0; /* Three.jsは一番奥 */
 }
 
-/* --- ヘッダーメニュー（修正版） --- */
+/* =========================================
+   ヘッダーメニュー（ハンバーガー対応版）
+   ========================================= */
 .site-header {
     font-family: "DotGothic16", sans-serif;
     position: fixed;
     top: 20px;
-    right: 15px;
-    z-index: 100;
-    background-color: transparent; /* 背景透明化 */
+    right: 20px;
+    z-index: 9999;
+    background-color: transparent;
 
-    /* ▼▼▼ アニメーション用設定 ▼▼▼ */
-    /* 初期状態：画面上に隠しておく */
+    /* アニメーション用 */
     transform: translateY(-200%);
     opacity: 0;
     transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
-    pointer-events: none; /* 隠れている時はクリック不可 */
+    pointer-events: none;
 }
 
-/* 表示状態のクラス */
 .site-header.visible {
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
 }
 
+/* ナビゲーションメニューのコンテナ */
+.nav-menu {
+    display: flex;
+    gap: 15px;
+}
+
+/* メニューボタンのスタイル */
 .site-header button {
     font-family: "DotGothic16", sans-serif;
-    background: rgba(255, 255, 255, 0);
-    border: 1px solid rgba(255, 255, 255, 0);
-    padding: 8px 25px;
-    gap: 10px;
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 8px 20px;
+    border-radius: 30px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
     color: #333;
     transition: all 0.3s ease;
     pointer-events: auto;
+    white-space: nowrap;
 }
 
 .site-header button:hover {
-    background: rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
     color: #5c5c5c;
-    transform: translateY(-4px);
 }
+
+/* --- ハンバーガーボタン（PCでは非表示） --- */
+.hamburger-btn {
+    display: none;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: auto;
+    z-index: 10001;
+    margin-left: auto;
+}
+
+.hamburger-btn span {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    height: 2px;
+    background-color: #333;
+    transition: all 0.4s;
+    border-radius: 2px;
+}
+
+.hamburger-btn span:nth-of-type(1) { top: 13px; }
+.hamburger-btn span:nth-of-type(2) { top: 19px; }
+.hamburger-btn span:nth-of-type(3) { top: 25px; }
+
+/* --- スマホ・タブレット版 (768px以下) --- */
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: block; /* 表示 */
+    }
+
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(244, 244, 244, 0.95);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+        z-index: 10000;
+    }
+
+    .nav-menu.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .site-header button {
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+
+    /* ハンバーガーのアニメーション */
+    .hamburger-btn.open span:nth-of-type(1) {
+        top: 19px;
+        transform: rotate(45deg);
+    }
+    .hamburger-btn.open span:nth-of-type(2) {
+        opacity: 0;
+    }
+    .hamburger-btn.open span:nth-of-type(3) {
+        top: 19px;
+        transform: rotate(-45deg);
+    }
+}
+/* ========================================= */
+
 
 .site-footer {
     font-family: "DotGothic16", sans-serif;
@@ -150,11 +233,10 @@ body {
     z-index: 100;
 }
 
-.chapter0{
+.chapter0 {
     max-width: 500px;
     width: 100%;
 }
-
 
 /* --- 1. ベースの共通設定 --- */
 .overlay-text {
@@ -175,38 +257,30 @@ body {
 .overlay-text::-webkit-scrollbar {
     width: 8px;
 }
-
 .overlay-text::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
 }
-
 .overlay-text::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.5);
     border-radius: 4px;
 }
-
 .overlay-text h1 {
     font-size: 2.5rem;
     margin-bottom: 30px;
     padding-bottom: 10px;
 }
-
 .overlay-text p {
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 20px;
 }
-
 .overlay-text.visible {
     opacity: 1;
     visibility: visible;
 }
 
-
 /* --- 2. 個別のデザイン設定 --- */
-
-/* F地点（プロローグ） */
 #content-f {
     background: #fff;
     color: #333;
@@ -216,8 +290,6 @@ body {
     padding: 0;
     margin: 0;
 }
-
-/* C地点（第1章） */
 #content-c {
     background: rgba(0, 0, 0, 0);
     color: #fff;
@@ -226,8 +298,6 @@ body {
     max-height: 70vh;
     text-align: center;
 }
-
-/* D地点（第2章） */
 #content-d {
     background: rgba(0, 0, 0, 0);
     color: #fff;
@@ -236,8 +306,6 @@ body {
     max-height: 60vh;
     text-align: center;
 }
-
-/* E地点（第3章） */
 #content-e {
     background: rgba(0, 0, 0, 0);
     color: #fff;
@@ -246,7 +314,6 @@ body {
     max-height: 65vh;
     text-align: center;
 }
-
 
 /* --- 左右のスライド画像 --- */
 .overlay-corner {
@@ -261,24 +328,20 @@ body {
     width: 100%;
     transition: opacity 0.5s ease, visibility 0.2s ease, transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
-
 .overlay-corner img {
     width: 100%;
     display: block;
 }
-
 .left-bottom {
     bottom: 0;
     left: 0;
     transform: translateX(-100%);
 }
-
 .right-bottom {
     bottom: 0;
     right: 0;
     transform: translateX(100%);
 }
-
 .overlay-corner.visible {
     opacity: 1;
     visibility: visible;
@@ -286,7 +349,7 @@ body {
     transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.5s, opacity 1.2s ease 0.5s;
 }
 
-/* --- ボタン位置とデザイン --- */
+/* --- 空間内ボタン等 --- */
 .button-container {
     display: flex;
     justify-content: center;
@@ -294,7 +357,6 @@ body {
     margin-bottom: 20px;
     width: 100%;
 }
-
 .nav-button {
     padding: 10px 25px;
     font-size: 1.2rem;
@@ -305,12 +367,10 @@ body {
     pointer-events: auto;
     transition: transform 0.2s, background-color 0.2s;
 }
-
 .nav-button:hover {
     transform: scale(1.1);
     background-color: #eee;
 }
-
 .nav-button:active {
     transform: scale(0.95);
 }
@@ -320,17 +380,14 @@ body {
     font-family: "Noto Sans JP", sans-serif;
     text-align: center;
 }
-
 .chapter1, .chapter1-p {
     font-family: "Zen Kurenaido", sans-serif;
     text-align: left;
 }
-
 .chapter2, .chapter2-p {
     font-family: "DotGothic16", sans-serif;
     text-align: left;
 }
-
 .chapter3, .chapter3-p {
     font-family: "Noto Sans JP", sans-serif;
     text-align: left;
@@ -350,19 +407,16 @@ body {
     z-index: 50;
     pointer-events: none;
 }
-
 #typewriter-text::after {
     content: "_";
     animation: blink 1s infinite;
     opacity: 1;
     margin-left: 5px;
 }
-
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
-
 
 .vignette-overlay {
     position: fixed;
@@ -387,20 +441,17 @@ body {
     transform: scale(1.1); 
     transition: opacity 1.5s ease-out, visibility 1.5s ease-out, transform 1.5s ease-out;
 }
-
 .center-fade-image img {
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
 }
-
 .center-fade-image.visible {
     opacity: 1;
     visibility: visible;
     transform: scale(1); 
     position: fixed;
 }
-
 .center-fade-image.hiding {
     opacity: 0;
     visibility: visible;
@@ -408,107 +459,128 @@ body {
     transition: opacity 1.0s ease-in, transform 1.0s ease-in, visibility 1.0s linear;
 }
 
-
 .back {
-  position: sticky;
-  top: 0px; /* 上端から何pxの位置で固定するか */
-  z-index: -100; /* 他の要素より手前に表示 */
-  padding: 0;
-  margin: 0;
-  }
+    position: sticky;
+    top: 0px; 
+    z-index: -100; 
+    padding: 0;
+    margin: 0;
+}
 
-  /* --- 1. 配置の魔法（親箱） --- */
+/* --- ホバー画像（3枚重ね）の設定 --- */
 .container {
-  display: flex;           /* 子要素を横並びにする */
-  justify-content: center; /* 中央寄せ（お好みで space-between 等に変更可） */
-  gap: 20px;               /* 画像と画像の間の隙間 */
-  width: 100%;             /* 横幅いっぱい */
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
 }
 
 .img-box {
-  position: relative;
-  width: 45%;
-  height: 600px;
-  overflow: hidden;
+    position: relative;
+    width: 45%;
+    height: 600px;
+    overflow: hidden;
 }
 
-/* --- 共通: 3枚の画像をすべて同じ位置・サイズに --- */
 .img-box::before,
 .img-box::after,
 .img-box .overlay {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  /* アニメーション設定（移動と透明度） */
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  pointer-events: none; /* 上に乗る要素がマウス判定を邪魔しないようにする */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    pointer-events: none;
 }
 
-/* =========================================
-   レイヤー構成（z-index）と初期状態
-   ========================================= */
-
-/* 【1. 一番上のレイヤー（新設）】 */
+/* レイヤー構成 */
 .img-box .overlay {
-  z-index: 3;   /* 最前面 */
-  opacity: 0;   /* 最初は透明 */
+    z-index: 3;   /* 最前面 */
+    opacity: 0;   /* 最初は透明 */
 }
-
-/* 【2. 真ん中のレイヤー（元のスライド画像）】 */
 .img-box::before {
-  z-index: 2;   /* 真ん中 */
-  opacity: 1;   /* 最初は見えている */
+    z-index: 2;   /* 真ん中 */
+    opacity: 1;   /* 最初は見えている */
 }
-
-/* 【3. 一番下のレイヤー（元のホバー画像）】 */
 .img-box::after {
-  z-index: 1;   /* 最背面 */
-  opacity: 0;   /* 最初は透明 */
+    z-index: 1;   /* 最背面 */
+    opacity: 0;   /* 最初は透明 */
 }
 
-/* =========================================
-   ホバー時の動作
-   ========================================= */
-
-/* 一番上(overlay) と 一番下(after) をフェードイン */
+/* ホバー時の動作 */
 .img-box:hover .overlay,
 .img-box:hover::after {
-  opacity: 1;
+    opacity: 1;
 }
 
+/* 画像設定 */
+.img-1::before { background-image: url('./profile-15.png'); }
+.img-1::after { background-image: url('./character-13.png'); }
+.img-1 .overlay { background-image: url('./moji-17.png'); }
 
-.img-1::before {
-  background-image: url('./profile-15.png');   /* 真ん中 */
-}
-.img-1::after {
-  background-image: url('./character-13.png'); /* 一番下 */
-}
-.img-1 .overlay {
-  background-image: url('./moji-17.png');    /* ★一番上（追加画像） */
-}
+.img-1:hover::before { transform: translateX(-30%); }
 
-/* 1つ目は左へスライド */
-.img-1:hover::before {
-  transform: translateX(-30%);
-}
+.img-2::before { background-image: url('./profile-16.png'); }
+.img-2::after { background-image: url('./character-14.png'); }
+.img-2 .overlay { background-image: url('./moji-18.png'); }
 
-/* --- 2つ目 (.img-2) --- */
-.img-2::before {
-  background-image: url('./profile-16.png');   /* 真ん中 */
-}
-.img-2::after {
-  background-image: url('./character-14.png'); /* 一番下 */
-}
-.img-2 .overlay {
-  background-image: url('./moji-18.png');    /* ★一番上（追加画像） */
+.img-2:hover::before { transform: translateX(30%); }
+
+
+/* --- 穴あき背景と浮遊画像 --- */
+.overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Three.js(z-index:0)より手前 */
+    pointer-events: none;
 }
 
-/* 2つ目は右へスライド */
-.img-2:hover::before {
-  transform: translateX(30%);
+.hole-background {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background-image: url('hyousi.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.floating-images {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.img-item {
+    position: absolute;
+    pointer-events: auto;
+}
+
+.item-1 {
+    top: 180px;
+    left: 150px;
+    width: 600px;
+}
+.item-2 {
+    bottom: 100px;
+    right: 150px;
+    width: 400px;
+}
+
+/* スクロール画像を中央に配置するコンテナ */
+.scroll-container {
+    text-align: center; /* 中身（画像）を横方向の中央に揃える */
+    width: 100%;        /* 横幅いっぱいに広げて中央の位置を確定させる */
+    margin-top: 85vh;   /* 必要なら上に少し隙間をあける */
+    /* position: fixed; bottom: 20px; などで画面下に固定することも可能です */
+}
+.scroll-container img {
+    width: 150px;  /* ← ここを好きな数字に変えてください */
+    height: auto;  /* 高さは自動調整（比率を崩さないためのおまじない） */
 }

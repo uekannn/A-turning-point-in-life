@@ -46,10 +46,15 @@
     <canvas class="webgl"></canvas>
 
     <header class="site-header" style="background-color: #fff">
-      <nav>
+      <div class="hamburger-btn" id="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <nav class="nav-menu" id="nav-menu">
         <button id="nav-btn-b">ホーム</button>
         <button id="nav-btn-f">第0章</button>
-
         <button id="nav-btn-c">第1章</button>
         <button id="nav-btn-d">第2章</button>
         <button id="nav-btn-e">第3章</button>
@@ -67,28 +72,45 @@
     /---------------------------------------------------------------------------------------------------/
 
     <div id="content-f" class="overlay-text intro">
-      <img
-        src="hyousi.gif"
-        alt="hyousi Image"
-        style="width: 100%; height: auto; padding: 0; margin: 0"
-      />
+      <div class="overlay-container">
+        <div class="hole-background"></div>
 
-      <h1 style="font-size: 100px; padding: 0; margin: 150px 0 0 0; font-weight: 800;">第0章</h1>
+        <div class="floating-images">
+          <img src="title.png" class="img-item item-1" alt="画像1" />
+          <img src="index.png" class="img-item item-2" alt="画像2" />
+        </div>
+      </div>
+
+      <div class="scroll-container">
+        <img src="scroll.gif" alt="スクロール" />
+      </div>
+
+      <h1
+        style="
+          font-size: 100px;
+          padding: 200px 0 0 0;
+          margin: 150px 0 0 0;
+          font-weight: 800;
+        "
+      >
+        第0章
+      </h1>
       <h1 style="font-size: 30px; padding: 0; margin: 0">Introduction</h1>
       <p style="margin: 150px 0 -10px 0; font-size: 60px">about</p>
       <p style="font-size: 20px; padding: 0; margin: 0 0 50px 0">はじめに</p>
-      <p style="line-height: 50px; font-weight:200;">
-        今の私が「ものづくり」を楽しいと感じるのは、祖父の影響が大きいです。<br />
-        幼い頃から、木工制作に打ち込む祖父の姿を見てきました。<br />
-        時には一緒に手を動かし、木屑にまみれて作業をしました。<br /><br />
+      <p style="line-height: 50px; font-weight: 200">
+        私が「ものづくり」を好きになったのは、祖父の影響が大きいです。<br />
+        幼い頃から、木工制作をする祖父の姿を見てきました。<br />
+        一緒に作業したり、自由研究で小屋を作ったり。<br />
+        <br />
         「なぜ祖父は今、木工でものを作っているのだろう？」<br /><br />
-        長年連れ添った家族でも、意外と知らない「過去」があります。<br />
+    
         祖父はどんな人生を歩み、どんな転機を経て、今の木工制作にたどり着いたのか。<br />
-        このWebサイトでは、私のものづくりの師匠である祖父へのインタビューを通して、<br />
-        「人生の転機」を紐解きます。
+        私のものづくりの師匠である祖父へのインタビューを通して、<br />
+        「人生の転機」を聞いてきました。
       </p>
       <p style="margin: 150px 0 -10px 0; font-size: 60px">profile</p>
-      <p style="font-size: 20px; padding: 0; margin: 0 0 -50px 0;">登場人物</p>
+      <p style="font-size: 20px; padding: 0; margin: 0 0 -50px 0">登場人物</p>
 
       <div class="container">
         <div class="img-box img-1">

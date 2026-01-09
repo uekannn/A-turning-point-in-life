@@ -12,7 +12,6 @@ function isMobile() {
 }
 
 // 座標取得用ヘルパー関数
-// defaultVec: PC用座標(x,y,z), mobileOffset: スマホ時の補正値(x,y,z)
 function getResponsivePos(x, y, z, offX = 0, offY = 0, offZ = 0) {
     if (isMobile()) {
         return new THREE.Vector3(x + offX, y + offY, z + offZ);
@@ -20,35 +19,22 @@ function getResponsivePos(x, y, z, offX = 0, offY = 0, offZ = 0) {
     return new THREE.Vector3(x, y, z);
 }
 
-// --- カメラ座標の設定 (関数化) ---
-
-// A地点: スタート位置
-// スマホ時は少し右(x+5)＆後ろ(z+20)へ
+// --- カメラ座標の設定 ---
 const getPosA = () => getResponsivePos(-25, 4, 16, -10, 0, 35);
 const tarA = new THREE.Vector3(-2, 0, 0);
 
-// F地点: プロローグ
-// スマホ時は少し上(y+2)＆後ろ(z+15)へ
 const getPosF = () => getResponsivePos(-15, 5, 20, -10, 2, 35);
 const tarF = new THREE.Vector3(-2, -2, 0);
 
-// B地点: メイン
-// スマホ時は後ろ(z+15)へ
 const getPosB = () => getResponsivePos(0, 1.5, 20, 0, 0, 35);
 const tarB = new THREE.Vector3(0, -1, 0);
 
-// C地点: 寄り画
-// スマホ時は少しだけ後ろ(z+2)へ
 const getPosC = () => getResponsivePos(-11.18, 0.85, -0.38, 0, 0, 2);
 const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
-// D地点: 左の部屋
-// スマホ時は後ろ(z+10)へ
 const getPosD = () => getResponsivePos(0, 0, 2, 0, 0, 10);
 const tarD = new THREE.Vector3(0, 0, -10);
 
-// E地点: 右の部屋
-// スマホ時は後ろ(z+10)へ
 const getPosE = () => getResponsivePos(12.05, 0.1, 1, 0, 0, 10);
 const tarE = new THREE.Vector3(12.05, 0.1, -10);
 
@@ -65,14 +51,11 @@ let currentLocation = 'A';
 
 // --- HTML要素の取得 ---
 const flatContent = document.getElementById('flat-content');
-
-// コンテンツ（テキストボックス）
 const contentF       = document.getElementById('content-f');
 const contentD       = document.getElementById('content-d');
 const contentC       = document.getElementById('content-c');
 const contentE       = document.getElementById('content-e');
 
-// 左右のスライド画像
 const contentD_Left  = document.getElementById('content-d-left');
 const contentD_Right = document.getElementById('content-d-right');
 const contentC_Left  = document.getElementById('content-c-left');
@@ -80,20 +63,16 @@ const contentC_Right = document.getElementById('content-c-right');
 const contentE_Left  = document.getElementById('content-e-left');
 const contentE_Right = document.getElementById('content-e-right');
 
-// 全画面画像
 const contentB_Center = document.getElementById('content-b-center');
 const contentF_Center = document.getElementById('content-f-center');
-
-// 穴マスク
 const holeB = document.getElementById('hole-b');
 
-// タイプライター
 const typewriterContent = document.getElementById('typewriter-text');
 if (typewriterContent) {
     typewriterContent.style.display = 'none';
 }
 
-// ヘッダーナビ & スクロール監視
+// ヘッダーナビ
 const headerNav = document.querySelector('.site-header'); 
 let scrollAmountF = 0; 
 
@@ -117,7 +96,6 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(defaultBgColor);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-// 初期位置の設定（レスポンシブ対応）
 camera.position.copy(getPosA());
 
 const canvas = document.querySelector('.webgl');
@@ -125,7 +103,6 @@ const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// ライト
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight(0xffffff, 4);
@@ -149,9 +126,6 @@ loader.load('./model.glb', (gltf) => {
 
 // ★★★ 表示切り替え関数 ★★★
 function updateContentVisibility(location) {
-    // --- 1. 他の要素を隠す処理 ---
-    
-    // 左右スライド画像
     if(contentD_Left)  contentD_Left.classList.remove('visible');
     if(contentD_Right) contentD_Right.classList.remove('visible');
     if(contentC_Left)  contentC_Left.classList.remove('visible');
@@ -159,16 +133,13 @@ function updateContentVisibility(location) {
     if(contentE_Left)  contentE_Left.classList.remove('visible');
     if(contentE_Right) contentE_Right.classList.remove('visible');
 
-    // テキストボックス
     if(contentF)       contentF.classList.remove('visible');
     if(contentD)       contentD.classList.remove('visible');
     if(contentC)       contentC.classList.remove('visible');
     if(contentE)       contentE.classList.remove('visible');
 
-    // 穴マスク
     if(holeB) holeB.classList.remove('visible');
 
-    // --- 全画面画像の退場アニメーション処理 ---
     if(contentB_Center) {
         if (contentB_Center.classList.contains('visible')) {
             contentB_Center.classList.remove('visible');
@@ -187,9 +158,8 @@ function updateContentVisibility(location) {
         }
     }
 
-    if (!location) return; // 移動開始直後の呼び出しならここで終了
+    if (!location) return;
 
-    // --- 2. 現在地に合わせて表示する処理 ---
     if (location === 'B') {
         if(contentB_Center) {
             contentB_Center.classList.remove('hiding');
@@ -246,46 +216,33 @@ function clearTypewriter() {
     }
 }
 
-
-// ★★★ 移動実行関数（レスポンシブ対応版） ★★★
-// targetLook: 注視点, newLocationName: 'F', 'B' などのエリア名
-// ※ targetPos引数は無視し、関数内で再計算します
+// ★★★ 移動実行関数 ★★★
 function executeMove(targetLook, newLocationName) {
     controls.enabled = false; 
     clearTypewriter();
-    
-    // 移動開始（画像の退場アニメ開始）
     updateContentVisibility(null); 
 
-    // ▼▼▼ ヘッダーと背景透明度のリセット処理 ▼▼▼
+    // ▼【変更点】ここでのヘッダー表示を削除
     if (headerNav) {
-        headerNav.classList.add('visible');
+        // headerNav.classList.add('visible'); // ←削除済み
 
         if (newLocationName === 'F') {
             scrollAmountF = 0;
-            if (contentF) {
-                contentF.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-            }
+            if (contentF) contentF.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
         } else {
-            if (contentF) {
-                contentF.style.backgroundColor = '';
-            }
+            if (contentF) contentF.style.backgroundColor = '';
         }
     }
 
-    // 0.5秒待ってから移動
     setTimeout(() => {
         let targetColor = defaultBgColor;
-        
-        // ★レスポンシブ座標の再取得
-        // 画面サイズが変わっている可能性があるので、移動直前に正しい座標を取得する
         let finalTargetPos;
         if (newLocationName === 'F') { targetColor = colorF; finalTargetPos = getPosF(); }
         else if (newLocationName === 'C') { targetColor = colorC; finalTargetPos = getPosC(); }
         else if (newLocationName === 'D') { targetColor = colorD; finalTargetPos = getPosD(); }
         else if (newLocationName === 'E') { targetColor = colorE; finalTargetPos = getPosE(); }
-        else if (newLocationName === 'B') { finalTargetPos = getPosB(); } // B地点
-        else { finalTargetPos = getPosA(); } // デフォルト
+        else if (newLocationName === 'B') { finalTargetPos = getPosB(); } 
+        else { finalTargetPos = getPosA(); }
 
         gsap.to(scene.background, {
             r: targetColor.r, g: targetColor.g, b: targetColor.b,
@@ -316,6 +273,9 @@ function executeMove(targetLook, newLocationName) {
             ease: "power2.inOut",
             onUpdate: () => controls.update(),
             onComplete: () => {
+                // ▼【変更点】移動完了後にヘッダーを表示
+                if (headerNav) headerNav.classList.add('visible');
+
                 currentLocation = newLocationName;
                 controls.enabled = true;
 
@@ -334,8 +294,6 @@ function executeMove(targetLook, newLocationName) {
                     controls.enableRotate = true;
                     controls.rotateSpeed = 0.5;
                 }
-
-                // 移動完了後（画像の入場アニメ開始）
                 updateContentVisibility(currentLocation);
                 console.log(`Moved to: ${currentLocation}`);
             }
@@ -344,9 +302,7 @@ function executeMove(targetLook, newLocationName) {
 }
 
 
-// --- ボタンイベント (引数を簡略化) ---
-
-// 空間内のボタン
+// --- ボタンイベント ---
 if (btnToBFromF) {
     btnToBFromF.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -357,7 +313,6 @@ if (btnToD) { btnToD.addEventListener('click', (e) => { e.stopPropagation(); exe
 if (btnToE) { btnToE.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarE, 'E'); }); }
 if (btnToB) { btnToB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarB, 'B'); }); }
 
-// ヘッダーナビボタン
 if (navBtnB) { navBtnB.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarB, 'B'); }); }
 if (navBtnF) { navBtnF.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarF, 'F'); }); }
 if (navBtnC) { navBtnC.addEventListener('click', (e) => { e.stopPropagation(); executeMove(tarC, 'C'); }); }
@@ -367,33 +322,23 @@ if (navBtnE) { navBtnE.addEventListener('click', (e) => { e.stopPropagation(); e
 
 // --- Welcome画面からのスタート ---
 let hasStarted = false;
-
 function startExperience() {
     if (hasStarted) return; 
     hasStarted = true;
-
-    if (flatContent) {
-        flatContent.classList.add('hidden');
-    }
+    if (flatContent) flatContent.classList.add('hidden');
     
-    // 開始時にヘッダーを必ず表示
-    if (headerNav) {
-        headerNav.classList.add('visible');
-    }
-
-    // 最初は F (プロローグ) へ
+    // ▼【変更点】開始時の即座表示を削除
+    // if (headerNav) headerNav.classList.add('visible'); // ←削除済み
+    
     executeMove(tarF, 'F');
 }
 
-// --- スクロール・タッチ操作の共通処理 ---
+// --- スクロール・タッチ操作 ---
 function updateFLocationEffect(delta) {
     if (currentLocation !== 'F') return;
-
-    // 加算
     scrollAmountF += delta;
-    if (scrollAmountF < 0) scrollAmountF = 0; // マイナス防止
+    if (scrollAmountF < 0) scrollAmountF = 0; 
     
-    // 背景透明度の制御（0.2 〜 1.0 に変化）
     if (contentF) {
         const maxScroll = 300;
         const ratio = Math.min(scrollAmountF / maxScroll, 1);
@@ -401,14 +346,10 @@ function updateFLocationEffect(delta) {
         contentF.style.backgroundColor = `rgba(255, 255, 255, ${newAlpha})`;
     }
 }
-
-// PC: ホイールイベント
 window.addEventListener('wheel', (e) => { 
     if (!hasStarted) startExperience(); 
     updateFLocationEffect(e.deltaY);
 });
-
-// スマホ: タッチイベント
 let touchStartY = 0;
 window.addEventListener('touchstart', (e) => {
     if (!hasStarted) startExperience();
@@ -416,54 +357,38 @@ window.addEventListener('touchstart', (e) => {
 });
 window.addEventListener('touchmove', (e) => {
     if (currentLocation !== 'F') return;
-    
     const currentY = e.touches[0].clientY;
-    const diff = touchStartY - currentY; // 下に指を動かす(上スクロール)とマイナス、逆はプラス
-    
-    // スマホは移動量が大きいので感度調整
+    const diff = touchStartY - currentY; 
     updateFLocationEffect(diff * 2.0);
-    
     touchStartY = currentY;
 });
-
-
-window.addEventListener('touchstart', () => { if (!hasStarted) startExperience(); });
 if (flatContent) {
     flatContent.addEventListener('click', () => { if (!hasStarted) startExperience(); });
 }
-
 
 // --- 画面クリック ---
 let isDragging = false;
 window.addEventListener('mousedown', () => { isDragging = false; });
 window.addEventListener('mousemove', () => { isDragging = true; });
-
 window.addEventListener('mouseup', (event) => {
     if (isDragging) return;
     if (!controls.enabled) return;
     if (!hasStarted) return;
     if (event.target.tagName === 'BUTTON') return;
+    if (event.target.closest('.hamburger-btn') || event.target.closest('.nav-menu')) return;
 
-    // 現在地ごとのクリック時の移動先設定
-    if (currentLocation === 'A') {
-        executeMove(tarF, 'F');
-    }
-    else if (currentLocation === 'F') {
-        executeMove(tarB, 'B');
-    }
-    else if (currentLocation === 'B') {
-        executeMove(tarC, 'C');
-    } 
+    if (currentLocation === 'A') executeMove(tarF, 'F');
+    else if (currentLocation === 'F') executeMove(tarB, 'B');
+    else if (currentLocation === 'B') executeMove(tarC, 'C');
 });
 
-// --- リサイズ処理（レスポンシブ座標補正付き） ---
+// --- リサイズ処理 ---
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // リサイズ時に現在の場所の正しい座標へカメラを補正する
     if (controls.enabled && hasStarted) {
         let newPos;
         switch(currentLocation) {
@@ -474,8 +399,6 @@ window.addEventListener('resize', () => {
             case 'E': newPos = getPosE(); break;
             default:  newPos = getPosA();
         }
-        
-        // アニメーションでスムーズに補正位置へ移動
         gsap.to(camera.position, {
             x: newPos.x, y: newPos.y, z: newPos.z,
             duration: 0.5,
@@ -483,6 +406,26 @@ window.addEventListener('resize', () => {
         });
     }
 });
+
+// --- ハンバーガーメニュー制御 ---
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const navMenu = document.getElementById('nav-menu');
+const navButtons = document.querySelectorAll('.nav-menu button');
+
+if (hamburgerBtn && navMenu) {
+    hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburgerBtn.classList.toggle('open');
+        navMenu.classList.toggle('open');
+    });
+
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('open');
+            navMenu.classList.remove('open');
+        });
+    });
+}
 
 function animate() {
     requestAnimationFrame(animate);
@@ -496,28 +439,20 @@ window.onload = function() {
     const loopVideo = document.getElementById('video-loop');
     const introVideo = document.getElementById('video-intro');
 
-    // 安全策：要素がなければ強制スタート
     if (!loopVideo || !introVideo) {
         if(loadingScreen) loadingScreen.classList.add('loaded');
         startExperience();
         return;
     }
 
-    // ▼ STEP 1: ロード完了！選手交代 ▼
-    // ループ動画を止めて隠す
     loopVideo.pause();
     loopVideo.style.display = 'none';
 
-    // イントロ動画を表示して再生
     introVideo.style.display = 'block';
     introVideo.play().catch(e => console.log("再生エラー:", e));
 
-    // ▼ STEP 2: イントロ動画が終わったら ▼
     introVideo.onended = function() {
-        // 1. ローディング画面全体をフェードアウト
         if(loadingScreen) loadingScreen.classList.add('loaded');
-
-        // 2. Three.jsのカメラ移動スタート（少し遅らせて余韻を作る）
         setTimeout(() => {
             startExperience();
         }, 500); 
