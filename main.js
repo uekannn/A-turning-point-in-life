@@ -473,7 +473,7 @@ window.onload = function() {
 function initScrollTriggers() {
     const observerOptions = {
         root: null,        // 画面全体を基準
-        rootMargin: '-10% 0px -10% 0px', // 画面の上下10%は「見えていない」とみなす
+        rootMargin: '-10% 0px -45% 0px', // 画面の上下10%は「見えていない」とみなす
         threshold: 0       // ほんの少しでも見えたら反応開始
     };
 

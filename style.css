@@ -334,7 +334,7 @@ body {
 #content-d {
     background: rgba(0, 0, 0, 0);
     color: #fff;
-    width: 55%;
+    width: 50%;
     max-height: 60vh;
     display: flex;
     flex-direction: column; /* 中身を縦に積む */
