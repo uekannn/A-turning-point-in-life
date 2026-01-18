@@ -12,6 +12,7 @@ function isMobile() {
 }
 
 // 座標取得用ヘルパー関数
+// offX, offY, offZ はスマホ時の位置補正用
 function getResponsivePos(x, y, z, offX = 0, offY = 0, offZ = 0) {
     if (isMobile()) {
         return new THREE.Vector3(x + offX, y + offY, z + offZ);
@@ -20,22 +21,29 @@ function getResponsivePos(x, y, z, offX = 0, offY = 0, offZ = 0) {
 }
 
 // --- カメラ座標の設定 ---
+
+// A地点: 変更なし
 const getPosA = () => getResponsivePos(-25, 4, 16, -10, 0, 35);
 const tarA = new THREE.Vector3(-2, 0, 0);
 
+// F地点: 変更なし
 const getPosF = () => getResponsivePos(-15, 5, 20, -10, 2, 35);
 const tarF = new THREE.Vector3(-2, -2, 0);
 
-const getPosB = () => getResponsivePos(0, 1.5, 20, 0, 0, 35);
+// B地点: スマホ時は少し上に(Y+2)、後ろに(Z+45)引いて全体が見えるように調整
+const getPosB = () => getResponsivePos(0, 1.5, 20, 0, 2, 45);
 const tarB = new THREE.Vector3(0, -1, 0);
 
+// C地点: 変更なし
 const getPosC = () => getResponsivePos(-11.18, 0.85, -0.38, 0, 0, 2);
 const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
-const getPosD = () => getResponsivePos(0, 0, 2, 0, 0, 10);
+// D地点: スマホ時は後ろに大きく引く(Z+25)
+const getPosD = () => getResponsivePos(0, 0, 2, 0, 0, 25);
 const tarD = new THREE.Vector3(0, 0, -10);
 
-const getPosE = () => getResponsivePos(12.05, 0.1, 1, 0, 0, 10);
+// E地点: スマホ時は後ろに大きく引く(Z+25)
+const getPosE = () => getResponsivePos(12.05, 0.1, 1, 0, 0, 25);
 const tarE = new THREE.Vector3(12.05, 0.1, -10);
 
 
@@ -381,11 +389,21 @@ window.addEventListener('mouseup', (event) => {
     if (!controls.enabled) return;
     if (!hasStarted) return;
     if (event.target.tagName === 'BUTTON') return;
+    if (event.target.closest('button')) return; // ボタン要素の中身をクリックした場合も考慮
     if (event.target.closest('.hamburger-btn') || event.target.closest('.nav-menu')) return;
 
-    if (currentLocation === 'A') executeMove(tarF, 'F');
-    else if (currentLocation === 'F') executeMove(tarB, 'B');
-    else if (currentLocation === 'B') executeMove(tarC, 'C');
+    // ★ F地点での移動禁止（ボタン以外）
+    if (currentLocation === 'F') {
+        return; 
+    }
+
+    // 他の地点の移動ロジック
+    if (currentLocation === 'A') {
+        executeMove(tarF, 'F');
+    }
+    else if (currentLocation === 'B') {
+        executeMove(tarC, 'C');
+    }
 });
 
 // --- リサイズ処理 ---
@@ -465,10 +483,6 @@ window.onload = function() {
     };
 }
 
-// ==========================================
-//  ★変更: 文章が見えている間だけ画像を表示
-//  ＆ 見えなくなったら消す（トグル）
-// ==========================================
 
 function initScrollTriggers() {
     const observerOptions = {
