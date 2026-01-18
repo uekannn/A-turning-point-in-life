@@ -782,6 +782,7 @@ body {
         padding: 80px 20px;
         width: 100%;
         box-sizing: border-box;
+        margin: 0;
     }
     #content-f h1, 
     .intro h1 {
@@ -798,13 +799,13 @@ body {
     }
 
     .item-1 {
-        width: 40%;       /* PCは600px */ 
-        top: 10%;
-        left: 50%;
+        width: 70%;       /* PCは600px */ 
+        top: 15%;
+        left: 5%;
     }
     .item-2 {
-        width: 35%;       /* PCは400px */
-        bottom: 10%;
-        right: 50%;
+        width: 50%;       /* PCは400px */
+        bottom: 15%;
+        right: 5%;
     }
 }
