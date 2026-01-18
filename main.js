@@ -31,19 +31,19 @@ const getPosF = () => getResponsivePos(-15, 5, 20, -10, 2, 35);
 const tarF = new THREE.Vector3(-2, -2, 0);
 
 // B地点: スマホ時は少し上に(Y+2)、後ろに(Z+45)引いて全体が見えるように調整
-const getPosB = () => getResponsivePos(0, 1.5, 20, 0, 2, 45);
+const getPosB = () => getResponsivePos(0, 1.5, 20, 0, 2, 40);
 const tarB = new THREE.Vector3(0, -1, 0);
 
 // C地点: 変更なし
-const getPosC = () => getResponsivePos(-11.18, 0.85, -0.38, 0, 0, 2);
+const getPosC = () => getResponsivePos(-11.18, 0.85, -0.38, 0, 1, 0);
 const tarC = new THREE.Vector3(-11.18, -1, -0.381);
 
 // D地点: スマホ時は後ろに大きく引く(Z+25)
-const getPosD = () => getResponsivePos(0, 0, 2, 0, 0, 25);
+const getPosD = () => getResponsivePos(0, 0, 2, 0, 0, 0);
 const tarD = new THREE.Vector3(0, 0, -10);
 
 // E地点: スマホ時は後ろに大きく引く(Z+25)
-const getPosE = () => getResponsivePos(12.05, 0.1, 1, 0, 0, 25);
+const getPosE = () => getResponsivePos(12.05, 0.1, 1, 0, 0, );
 const tarE = new THREE.Vector3(12.05, 0.1, -10);
 
 
@@ -458,6 +458,10 @@ function animate() {
 }
 animate();
 
+// ==========================================
+//  ★動画の出し分け & ロード処理
+// ==========================================
+
 window.onload = function() {
     const loadingScreen = document.getElementById('loading');
     const loopVideo = document.getElementById('video-loop');
@@ -472,6 +476,19 @@ window.onload = function() {
     loopVideo.pause();
     loopVideo.style.display = 'none';
 
+    // ▼▼▼ スマホとPCで動画を切り替える処理 ▼▼▼
+    if (isMobile()) {
+        // スマホの場合は別の動画ファイルに変更
+        // ※ 'programing-sp.mp4' は実際のファイル名に合わせてください
+        introVideo.src = './programing-s.mp4';
+    } else {
+        // PCの場合は元の動画を使用
+        introVideo.src = './programing.mp4';
+    }
+    // ソースを変更したのでロードし直す
+    introVideo.load();
+    // ▲▲▲ 切り替え処理終了 ▲▲▲
+
     introVideo.style.display = 'block';
     introVideo.play().catch(e => console.log("再生エラー:", e));
 
@@ -483,6 +500,10 @@ window.onload = function() {
     };
 }
 
+// ==========================================
+//  ★変更: 文章が見えている間だけ画像を表示
+//  ＆ 見えなくなったら消す（トグル）
+// ==========================================
 
 function initScrollTriggers() {
     const observerOptions = {

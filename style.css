@@ -680,11 +680,11 @@ body {
     #content-c, 
     #content-d, 
     #content-e {
-        width: 90% !important; 
+        width: 80% !important; 
         max-width: 100% !important;
         font-size: 16px;
         padding: 20px;
-        max-height: 80vh;
+        height: 50vh;
     }
 
     /* --- 3. 内部レイアウトの縦積み化（C, D, E共通） --- */
@@ -692,9 +692,9 @@ body {
     #content-d .table-row,
     #content-e .table-row {
         flex-direction: column;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-        padding: 15px 0;
-        gap: 5px;
+        padding: 0;
+        gap: 0
+        ;
     }
 
     /* ラベル */
@@ -703,9 +703,9 @@ body {
     #content-e .col-label {
         width: 100%;
         text-align: left;
-        margin-bottom: 5px;
         font-size: 0.9rem;
-        color: #ffcc00;
+        padding-left: 0;
+        margin-bottom: -20px;
     }
 
     /* テキスト */
@@ -714,7 +714,7 @@ body {
     #content-e .col-text {
         width: 100%;
         padding-left: 0;
-        padding-top: 5px;
+        text-align: left;
     }
 
     /* --- 4. 画像付きホバーボックス（img-box） --- */
@@ -730,17 +730,19 @@ body {
 
     /* --- 5. スクロール連動画像（スマホのみ小さく変更） --- */
     .external-image-container {
-        width: 45%;      /* PCは400px、スマホは45% */
-        right: 5%;
-        top: auto;
-        bottom: 10%;
+        width: 45%;      
+        right: 50%;
+        top: 10%;
+        bottom: auto;
         transform: none;
+        z-index: 30;
     }
     .external-image-container.position-left {
-        left: 5%;
+        left: 50%;
         right: auto;
-        top: auto;
-        bottom: 10%;
+        top: 10%;
+        bottom: auto;
+        z-index: 30;
     }
 
     /* --- 6. オーバーレイテキスト共通 --- */
@@ -756,23 +758,23 @@ body {
 
     /* --- 7. ロゴの調整（スマホのみサイズ指定） --- */
     .logo img {
-        width: 80px;  /* スマホの時だけ80px */
+        width: 100px;  /* スマホの時だけ80px */
         height: auto;
         margin: 0px;
     }
 
     /* --- 8. C・D・E地点の左右下の装飾画像（スマホのみ小さく） --- */
     .overlay-corner {
-        max-width: 120px; /* PCは450px、スマホは120px */
-        width: 30%;
+        max-width: 300px; /* PCは450px、スマホは120px */
+        width: 40%;
     }
     .left-bottom {
-        left: 10px;
-        bottom: 10px;
+        left: 0;
+        bottom: 0;
     }
     .right-bottom {
-        right: 10px;
-        bottom: 10px;
+        right: 0;
+        bottom: 0;
     }
 
     /* --- 9. F地点（最初の画面）の調整 --- */
@@ -783,7 +785,7 @@ body {
     }
     #content-f h1, 
     .intro h1 {
-        font-size: 1.5rem;
+        font-size: 1rem;
         line-height: 1.4;
         margin-bottom: 20px;
     }
@@ -791,21 +793,18 @@ body {
     .intro p,
     .intro-p {
         font-size: 0.85rem;
-        line-height: 1.8;
+        line-height: 1.5;
         text-align: center;
     }
 
-    /* 浮遊画像（スマホのみ小さく） */
     .item-1 {
-        width: 40%;       /* PCは600px */
-        max-width: 180px; 
-        top: 15vh;
-        left: 5vw;
+        width: 40%;       /* PCは600px */ 
+        top: 10%;
+        left: 50%;
     }
     .item-2 {
         width: 35%;       /* PCは400px */
-        max-width: 150px;
-        bottom: 15vh;
-        right: 5vw;
+        bottom: 10%;
+        right: 50%;
     }
 }
