@@ -335,7 +335,7 @@ body {
     background: rgba(0, 0, 0, 0);
     color: #fff;
     width: 55%;
-    max-height: 70vh;
+    max-height: 60vh;
     display: flex;
     flex-direction: column; /* 中身を縦に積む */
     gap: 15px;              /* 箱と箱の間の隙間 */
@@ -635,16 +635,14 @@ body {
     transform: translateY(0);
 }
 
-/* =========================================
-   外側に表示する画像のコンテナ設定（今回追加）
-   ========================================= */
+
 .external-image-container {
     position: fixed;
-    top: 50%;          /* 画面の上下中央 */
-    right: 5%;         /* 画面の右端から5%の位置 */
+    top: 35%;          /* 画面の上下中央 */
+    right: 3%;         /* 画面の右端から5%の位置 */
     transform: translateY(-50%); /* 完全な中央揃えのための調整 */
-    width: 300px;      /* 画像の表示幅（お好みで調整してください） */
-    z-index: 20;       /* テキストボックス(z-index:11)より前面に表示 */
+    width: 400px;      /* 画像の表示幅（お好みで調整してください） */
+    z-index: 1;       /* テキストボックス(z-index:11)より前面に表示 */
     pointer-events: none; /* 画像がマウス操作を邪魔しないようにする */
 }
 
@@ -655,22 +653,11 @@ body {
     display: block;
 }
 
-/* style.css の末尾あたりに追加 */
 
-/* ...既存の external-image-container の設定... */
-.external-image-container {
-    position: fixed;
-    top: 50%;
-    right: 5%;  /* ←これが右寄せの設定 */
-    transform: translateY(-50%);
-    width: 300px;
-    z-index: 20;
-    pointer-events: none;
-}
-/* ... */
 
 /* ▼▼▼ 追加：左側配置用のクラス ▼▼▼ */
 .external-image-container.position-left {
-    right: auto; /* 右寄せの設定を打ち消す */
-    left: 5%;    /* 左端から5%の位置に配置 */
+    right: auto;
+    left: 3%;
+    top: 40%; 
 }

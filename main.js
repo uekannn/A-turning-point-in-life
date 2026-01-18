@@ -216,16 +216,26 @@ function clearTypewriter() {
     }
 }
 
+// ==========================================
+//  ★追加: 全てのスクロール連動画像を強制的に消す関数
+// ==========================================
+function resetScrollImages() {
+    const visibleImages = document.querySelectorAll('.fade-in-image.is-visible');
+    visibleImages.forEach(img => {
+        img.classList.remove('is-visible');
+    });
+}
+
 // ★★★ 移動実行関数 ★★★
 function executeMove(targetLook, newLocationName) {
     controls.enabled = false; 
     clearTypewriter();
-    updateContentVisibility(null); 
+    updateContentVisibility(null);
+    
+    // ★追加: 移動開始時にスクロール連動画像をリセット
+    resetScrollImages();
 
-    // ▼【変更点】ここでのヘッダー表示を削除
     if (headerNav) {
-        // headerNav.classList.add('visible'); // ←削除済み
-
         if (newLocationName === 'F') {
             scrollAmountF = 0;
             if (contentF) contentF.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
@@ -273,7 +283,6 @@ function executeMove(targetLook, newLocationName) {
             ease: "power2.inOut",
             onUpdate: () => controls.update(),
             onComplete: () => {
-                // ▼【変更点】移動完了後にヘッダーを表示
                 if (headerNav) headerNav.classList.add('visible');
 
                 currentLocation = newLocationName;
@@ -326,9 +335,6 @@ function startExperience() {
     if (hasStarted) return; 
     hasStarted = true;
     if (flatContent) flatContent.classList.add('hidden');
-    
-    // ▼【変更点】開始時の即座表示を削除
-    // if (headerNav) headerNav.classList.add('visible'); // ←削除済み
     
     executeMove(tarF, 'F');
 }
@@ -461,12 +467,13 @@ window.onload = function() {
 
 // ==========================================
 //  ★変更: 文章が見えている間だけ画像を表示
+//  ＆ 見えなくなったら消す（トグル）
 // ==========================================
 
 function initScrollTriggers() {
     const observerOptions = {
         root: null,        // 画面全体を基準
-        rootMargin: '-10% 0px -10% 0px', // 画面の上下10%は「見えていない」とみなす（ちらつき防止）
+        rootMargin: '-10% 0px -10% 0px', // 画面の上下10%は「見えていない」とみなす
         threshold: 0       // ほんの少しでも見えたら反応開始
     };
 
