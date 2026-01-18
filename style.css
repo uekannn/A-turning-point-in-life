@@ -130,7 +130,7 @@ body {
 }
 
 .site-header button:hover {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0);
     transform: translateY(-2px);
     color: #5c5c5c;
 }
@@ -290,30 +290,75 @@ body {
     padding: 0;
     margin: 0;
 }
+/* --- #content-c の既存設定を更新 --- */
 #content-c {
     background: rgba(0, 0, 0, 0);
     color: #fff;
-    width: 80%;
-    max-width: 500px;
+    width: 100%;
+    max-width: 700px;
     max-height: 70vh;
+    display: flex;
+    flex-direction: column; /* 中身を縦に積む */
+    gap: 15px;              /* 箱と箱の間の隙間 */
+    margin: 0 auto;         /* 画面中央に配置 */
     text-align: center;
+     font-family: "Zen Kurenaido", sans-serif;
+    font-size: 20px;
 }
+
+.table-row {
+    display: flex;          /* 中身を横並びにする */
+    width: 100%;
+    padding: 15px;          /* 内側の余白 */
+}
+
+/* 2. 左側の列（項目名） */
+.col-label {
+    width: auto;    
+    padding: 10px;
+    text-align: center;     /* 文字を中央揃え */
+    margin-right: 15px;     /* 右の文字との隙間 */
+
+    font-weight: bold; 
+    text-align: left;
+    
+}
+
+/* 3. 右側の列（内容） */
+.col-text {
+     padding: 10px;
+    width: 80%;             /* 右側の幅（残り全部） */
+    text-align: left;       /* 左寄せ */
+}
+
 #content-d {
     background: rgba(0, 0, 0, 0);
     color: #fff;
-    width: 80%;
-    max-width: 800px;
-    max-height: 60vh;
+    width: 55%;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column; /* 中身を縦に積む */
+    gap: 15px;              /* 箱と箱の間の隙間 */
+    margin: 0 auto;         /* 画面中央に配置 */
     text-align: center;
+    font-family: "DotGothic16", sans-serif;
+    font-size: 20px;
 }
+
 #content-e {
     background: rgba(0, 0, 0, 0);
     color: #fff;
-    width: 80%;
-    max-width: 800px;
+    width:55%;
     max-height: 65vh;
+    display: flex;
+    flex-direction: column; /* 中身を縦に積む */
+    gap: 15px;              /* 箱と箱の間の隙間 */
+    margin: 0 auto;         /* 画面中央に配置 */
     text-align: center;
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 20px;
 }
+
 
 /* --- 左右のスライド画像 --- */
 .overlay-corner {
@@ -380,18 +425,7 @@ body {
     font-family: "Noto Sans JP", sans-serif;
     text-align: center;
 }
-.chapter1, .chapter1-p {
-    font-family: "Zen Kurenaido", sans-serif;
-    text-align: left;
-}
-.chapter2, .chapter2-p {
-    font-family: "DotGothic16", sans-serif;
-    text-align: left;
-}
-.chapter3, .chapter3-p {
-    font-family: "Noto Sans JP", sans-serif;
-    text-align: left;
-}
+
 
 /* --- タイプライター --- */
 #typewriter-text {
