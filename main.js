@@ -458,3 +458,42 @@ window.onload = function() {
         }, 500); 
     };
 }
+
+// ==========================================
+//  ★変更: 文章が見えている間だけ画像を表示
+// ==========================================
+
+function initScrollTriggers() {
+    const observerOptions = {
+        root: null,        // 画面全体を基準
+        rootMargin: '-10% 0px -10% 0px', // 画面の上下10%は「見えていない」とみなす（ちらつき防止）
+        threshold: 0       // ほんの少しでも見えたら反応開始
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // HTMLの data-target 属性で指定された画像IDを取得
+            const targetId = entry.target.getAttribute('data-target');
+            const targetImage = document.getElementById(targetId);
+
+            if (targetImage) {
+                // 文章が画面内にあるかチェック
+                if (entry.isIntersecting) {
+                    // 見えている時：クラスをつける
+                    targetImage.classList.add('is-visible');
+                } else {
+                    // 見えなくなった時：クラスを外す
+                    targetImage.classList.remove('is-visible');
+                }
+            }
+        });
+    }, observerOptions);
+
+    // .text-trigger クラスがついている全ての要素を監視
+    const triggers = document.querySelectorAll('.text-trigger');
+    triggers.forEach(trigger => observer.observe(trigger));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initScrollTriggers();
+});

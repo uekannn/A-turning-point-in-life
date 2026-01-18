@@ -618,3 +618,59 @@ body {
     width: 150px;  /* ← ここを好きな数字に変えてください */
     height: auto;  /* 高さは自動調整（比率を崩さないためのおまじない） */
 }
+
+/* ▼▼▼ 追加CSS ▼▼▼ */
+
+/* 隠しておく画像の初期スタイル */
+.fade-in-image {
+    opacity: 0;
+    transform: translateY(20px); /* 少し下から浮き上がる演出 */
+    transition: opacity 1.0s ease, transform 1.0s ease;
+    will-change: opacity, transform;
+}
+
+/* JSでこのクラスがつくと表示される */
+.fade-in-image.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================================
+   外側に表示する画像のコンテナ設定（今回追加）
+   ========================================= */
+.external-image-container {
+    position: fixed;
+    top: 50%;          /* 画面の上下中央 */
+    right: 5%;         /* 画面の右端から5%の位置 */
+    transform: translateY(-50%); /* 完全な中央揃えのための調整 */
+    width: 300px;      /* 画像の表示幅（お好みで調整してください） */
+    z-index: 20;       /* テキストボックス(z-index:11)より前面に表示 */
+    pointer-events: none; /* 画像がマウス操作を邪魔しないようにする */
+}
+
+/* コンテナ内の画像が幅いっぱいに広がるように */
+.external-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* style.css の末尾あたりに追加 */
+
+/* ...既存の external-image-container の設定... */
+.external-image-container {
+    position: fixed;
+    top: 50%;
+    right: 5%;  /* ←これが右寄せの設定 */
+    transform: translateY(-50%);
+    width: 300px;
+    z-index: 20;
+    pointer-events: none;
+}
+/* ... */
+
+/* ▼▼▼ 追加：左側配置用のクラス ▼▼▼ */
+.external-image-container.position-left {
+    right: auto; /* 右寄せの設定を打ち消す */
+    left: 5%;    /* 左端から5%の位置に配置 */
+}
